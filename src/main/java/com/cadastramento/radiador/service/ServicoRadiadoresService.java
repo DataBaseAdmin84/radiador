@@ -10,5 +10,5 @@ public interface ServicoRadiadoresService {
     List<Servicoradiadores> buscarTodosServicos();
     Optional<Servicoradiadores> buscarServicoPorId(Long id);
     void deletarServico(Long id);
-    // Adicione outros métodos de lógica de negócio conforme necessário
+
 }

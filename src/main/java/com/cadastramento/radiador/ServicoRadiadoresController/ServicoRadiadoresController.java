@@ -1,4 +1,4 @@
-package com.cadastramento.radiador.ServicoRadiadoresController; // Certifique-se de que o pacote está correto
+package com.cadastramento.radiador.ServicoRadiadoresController;
 
 import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;

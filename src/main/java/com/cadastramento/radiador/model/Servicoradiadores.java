@@ -1,94 +1,65 @@
-    package com.cadastramento.radiador.model;
+// src/main/java/com/cadastramento/radiador/model/Servicoradiadores.java
+package com.cadastramento.radiador.model;
 
-    import jakarta.persistence.*;
-    import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
-    import java.lang.annotation.Native;
-    import java.util.Date;
-    @Entity
-    @Table(name = "servicoradiadores")
-    public class Servicoradiadores {
+import java.time.LocalDate;
+import java.util.Date;
 
+@Entity
+@Table(name = "servicoradiadores")
+public class Servicoradiadores {
 
-        @Id
-        @Column(name = "id")
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @org.jetbrains.annotations.NotNull
-        @Column(name = "modelo")
-        private String modelo;
+    @NotNull
+    @Column(name = "modelo")
+    private String modelo;
 
-        @NotNull
-        @Column(name = "tipo")
-        private String tipo;
+    @NotNull
+    @Column(name = "tipo")
+    private String tipo;
 
-        @NotNull
-        @Column(name = "servicoExecutado")
-        private String servicoExecutado;
+    @NotNull
+    @Column(name = "servicoExecutado")
+    private String servicoExecutado;
 
-        @Column(name = "cliente")
-        private String cliente;
+    @NotNull
+    @Column(name = "cliente")
+    private String cliente;
 
-        @Column(name = "data")
-        private Date data;
+    @NotNull
+    @Column(name = "data")
+    private LocalDate data;
 
-        @Column(name = "preco")
-        private double preco;
+    @NotNull
+    @Column(name = "preco")
+    private double preco;
 
-        public Long getId() {
-            return id;
-        }
+    // getters e setters
 
-        public void setId(Long id) {
-            this.id = id;
-        }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-        public String getModelo() {
-            return modelo;
-        }
+    public String getModelo() { return modelo; }
+    public void setModelo(String modelo) { this.modelo = modelo; }
 
-        public void setModelo(String modelo) {
-            this.modelo = modelo;
-        }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-        public String getTipo() {
-            return tipo;
-        }
+    public String getServicoExecutado() { return servicoExecutado; }
+    public void setServicoExecutado(String servicoExecutado) { this.servicoExecutado = servicoExecutado; }
 
-        public void setTipo(String tipo) {
-            this.tipo = tipo;
-        }
+    public String getCliente() { return cliente; }
+    public void setCliente(String cliente) { this.cliente = cliente; }
 
-        public String getServicoExecutado() {
-            return servicoExecutado;
-        }
+    public LocalDate getData() { return data; }
+    public void setData(LocalDate data) { this.data = data; }
 
-        public void setServicoExecutado(String servicoExecutado) {
-            servicoExecutado = servicoExecutado;
-        }
-
-        public String getCliente() {
-            return cliente;
-        }
-
-        public void setCliente(String cliente) {
-            this.cliente = cliente;
-        }
-
-        public Date getData() {
-            return data;
-        }
-
-        public void setData(Date data) {
-            this.data = data;
-        }
-
-        public double getPreco() {
-            return preco;
-        }
-
-        public void setPreco(double preco) {
-            this.preco = preco;
-        }
-    }
+    public double getPreco() { return preco; }
+    public void setPreco(double preco) { this.preco = preco; }
+}
