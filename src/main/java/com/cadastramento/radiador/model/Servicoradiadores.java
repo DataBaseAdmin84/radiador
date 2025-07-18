@@ -1,7 +1,7 @@
     package com.cadastramento.radiador.model;
 
     import jakarta.persistence.*;
-    import org.antlr.v4.runtime.misc.NotNull;
+    import jakarta.validation.constraints.NotNull;
 
     import java.lang.annotation.Native;
     import java.util.Date;
@@ -15,7 +15,7 @@
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @NotNull
+        @org.jetbrains.annotations.NotNull
         @Column(name = "modelo")
         private String modelo;
 
