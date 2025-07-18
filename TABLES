@@ -1,0 +1,12 @@
+CREATE DATABASE radiadores;
+use radiadores;
+
+CREATE TABLE servicoradiadores (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    tipo VARCHAR(100) NOT NULL,
+    servicoExecutado VARCHAR(255) NOT NULL,
+    cliente VARCHAR(100) NOT NULL,
+    data DATE NOT NULL,
+    preco DOUBLE NOT NULL
+);
