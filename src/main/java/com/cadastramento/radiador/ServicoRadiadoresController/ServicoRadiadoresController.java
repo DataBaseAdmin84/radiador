@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/servicos")
 public class ServicoRadiadoresController {
@@ -25,6 +27,14 @@ public class ServicoRadiadoresController {
         model.addAttribute("servico", new Servicoradiadores());
         return "form-servico";
     }
+
+    @GetMapping
+    public String listarServicos(Model model) {
+        List<Servicoradiadores> servicos = servicoRadiadoresService.listarTodos();
+        model.addAttribute("servicos", servicos);
+        return "lista-servicos";
+    }
+
 
     @PostMapping
     public String salvarServico(@Valid @ModelAttribute("servico") Servicoradiadores servico, // Adicione @Valid
@@ -48,5 +58,8 @@ public class ServicoRadiadoresController {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar serviço: " + e.getMessage());
             return "redirect:/servicos/novo";
         }
+
+
     }
+
 }

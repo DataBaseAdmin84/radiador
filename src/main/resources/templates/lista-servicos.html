@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Serviços</title>
+</head>
+<body>
+    <h1>Serviços Cadastrados</h1>
+    <table>
+        <tr>
+            <th>Modelo</th>
+            <th>Tipo</th>
+            <th>Serviço Executado</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Preço</th>
+        </tr>
+        <th:block th:each="servico : ${servicos}">
+            <tr>
+                <td th:text="${servico.modelo}"></td>
+                <td th:text="${servico.tipo}"></td>
+                <td th:text="${servico.servicoExecutado}"></td>
+                <td th:text="${servico.cliente}"></td>
+                <td th:text="${servico.data}"></td>
+                <td th:text="${servico.preco}"></td>
+            </tr>
+        </th:block>
+    </table>
+</body>
+</html>

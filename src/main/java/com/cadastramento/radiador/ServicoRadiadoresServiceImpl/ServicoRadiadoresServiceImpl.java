@@ -34,4 +34,9 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
     public void deletarServico(Long id) {
         servicoRadiadoresRepository.deleteById(id);
     }
+
+    @Override
+    public List<Servicoradiadores> listarTodos() {
+        return servicoRadiadoresRepository.findAll();
+    }
 }
