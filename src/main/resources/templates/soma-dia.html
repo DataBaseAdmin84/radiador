@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Soma dos Serviços por Dia</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Soma dos Serviços por Dia</h1>
+    <form th:action="@{/servicos/soma-dia}" method="get">
+        <label for="data">Selecione a data:</label>
+        <input type="date" id="data" name="data" th:value="${data}">
+        <button type="submit">Somar</button>
+    </form>
+
+    <div th:if="${soma != null}">
+        <h2>Data selecionada: <span th:text="${data}"></span></h2>
+        <h2>Soma total: <span th:text="${soma}"></span></h2>
+    </div>
+</body>
+</html>
