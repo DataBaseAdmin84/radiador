@@ -148,6 +148,18 @@
         <button type="submit" class="btn-salvar">Salvar</button>
     </form>
 
+    <!-- Formulário para soma dos valores do dia -->
+    <form th:action="@{/servicos/soma-dia}" method="get" style="margin-top:30px; margin-bottom:20px;">
+        <label for="dataSoma">Somar valores do dia:</label>
+        <input type="date" id="dataSoma" name="data" required>
+        <button type="submit">Calcular Soma</button>
+    </form>
+
+    <div th:if="${somaDia != null}" style="margin-bottom:20px;">
+        <strong>Soma dos valores do dia:</strong>
+        <span th:text="${somaDia}"></span>
+    </div>
+
     <h2>Serviços Cadastrados</h2>
     <table>
         <tr>

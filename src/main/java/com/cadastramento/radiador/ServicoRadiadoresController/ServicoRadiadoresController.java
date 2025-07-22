@@ -4,15 +4,15 @@ import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -50,5 +50,12 @@ public class ServicoRadiadoresController {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar serviço: " + e.getMessage());
         }
         return "redirect:/servicos";
+    }
+    @GetMapping("/soma-dia")
+    public String mostrarSomaPorDia(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
+        BigDecimal soma = servicoRadiadoresService.somarValoresPorData(data);
+        model.addAttribute("soma", soma);
+        model.addAttribute("data", data);
+        return "soma-dia"; // Certifique-se de ter a view soma-dia.html
     }
 }

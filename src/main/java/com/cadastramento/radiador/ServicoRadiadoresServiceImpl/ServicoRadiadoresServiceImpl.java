@@ -6,6 +6,8 @@ import com.cadastramento.radiador.service.ServicoRadiadoresService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,5 +40,12 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
     @Override
     public List<Servicoradiadores> listarTodos() {
         return servicoRadiadoresRepository.findAll();
+    }
+    @Override
+    public BigDecimal somarValoresPorData(LocalDate data) {
+        return servicoRadiadoresRepository.findByData(data)
+                .stream()
+                .map(servico -> BigDecimal.valueOf(servico.getPreco()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

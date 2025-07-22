@@ -12,4 +12,5 @@ public interface ServicoRadiadoresService {
     void deletarServico(Long id);
 
     List<Servicoradiadores> listarTodos();
+    java.math.BigDecimal somarValoresPorData(java.time.LocalDate data);
 }
