@@ -3,6 +3,7 @@ package com.cadastramento.radiador.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class Servicoradiadores {
     private String cliente;
 
     @NotNull
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "data")
     private LocalDate data;
 

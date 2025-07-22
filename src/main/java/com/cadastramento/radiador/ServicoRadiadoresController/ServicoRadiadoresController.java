@@ -2,11 +2,11 @@ package com.cadastramento.radiador.ServicoRadiadoresController;
 
 import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
-import jakarta.validation.Valid; // Importar jakarta.validation.Valid
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult; // Importar BindingResult
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,44 +22,33 @@ public class ServicoRadiadoresController {
     @Autowired
     private ServicoRadiadoresService servicoRadiadoresService;
 
-    @GetMapping("/novo")
-    public String exibirFormularioCadastro(Model model) {
-        model.addAttribute("servico", new Servicoradiadores());
+    @GetMapping
+    public String exibirFormularioEListagem(Model model) {
+        if (!model.containsAttribute("servico")) {
+            model.addAttribute("servico", new Servicoradiadores());
+        }
+        List<Servicoradiadores> servicos = servicoRadiadoresService.listarTodos();
+        model.addAttribute("servicos", servicos);
         return "form-servico";
     }
 
-    @GetMapping
-    public String listarServicos(Model model) {
-        List<Servicoradiadores> servicos = servicoRadiadoresService.listarTodos();
-        model.addAttribute("servicos", servicos);
-        return "lista-servicos";
-    }
-
-
     @PostMapping
-    public String salvarServico(@Valid @ModelAttribute("servico") Servicoradiadores servico, // Adicione @Valid
-                                BindingResult result, // Adicione BindingResult
+    public String salvarServico(@Valid @ModelAttribute("servico") Servicoradiadores servico,
+                                BindingResult result,
                                 RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            // Se houver erros de validação, você pode adicioná-los ao modelo
-            // para exibir no formulário ou redirecionar com mensagens de erro.
-            // Para Thymeleaf, você pode adicionar 'result' ao model ou usar flash attributes.
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.servico", result);
-            redirectAttributes.addFlashAttribute("servico", servico); // Para reter os dados preenchidos
+            redirectAttributes.addFlashAttribute("servico", servico);
             redirectAttributes.addFlashAttribute("mensagemErro", "Verifique os campos do formulário.");
-            return "redirect:/servicos/novo"; // Redireciona de volta para o formulário
+            return "redirect:/servicos";
         }
 
         try {
             servicoRadiadoresService.salvarServico(servico);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Serviço cadastrado com sucesso!");
-            return "redirect:/servicos/novo";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar serviço: " + e.getMessage());
-            return "redirect:/servicos/novo";
         }
-
-
+        return "redirect:/servicos";
     }
-
 }
