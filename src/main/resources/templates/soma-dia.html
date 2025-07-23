@@ -3,18 +3,80 @@
 <head>
     <title>Soma dos Serviços por Dia</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #3498db;
+        }
+        .result {
+            margin-top: 24px;
+            background: #eaf6ff;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .result h2 {
+            margin: 8px 0;
+            color: #34495e;
+        }
+    </style>
 </head>
 <body>
-    <h1>Soma dos Serviços por Dia</h1>
-    <form th:action="@{/servicos/soma-dia}" method="get">
-        <label for="data">Selecione a data:</label>
-        <input type="date" id="data" name="data" th:value="${data}">
-        <button type="submit">Somar</button>
-    </form>
+    <div class="container">
+        <h1>Soma dos Serviços por Dia</h1>
+        <form th:action="@{/servicos/soma-dia}" method="get">
+            <label for="data">Selecione a data:</label>
+            <input type="date" id="data" name="data" th:value="${data}">
+            <button type="submit">Somar</button>
+        </form>
 
-    <div th:if="${soma != null}">
-        <h2>Data selecionada: <span th:text="${data}"></span></h2>
-        <h2>Soma total: <span th:text="${soma}"></span></h2>
+        <div th:if="${soma != null}" class="result">
+            <h2>Data selecionada: <span th:text="${data}"></span></h2>
+            <h2>Soma total: <span th:text="${soma}"></span></h2>
+        </div>
     </div>
 </body>
 </html>

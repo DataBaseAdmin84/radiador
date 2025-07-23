@@ -56,6 +56,6 @@ public class ServicoRadiadoresController {
         BigDecimal soma = servicoRadiadoresService.somarValoresPorData(data);
         model.addAttribute("soma", soma);
         model.addAttribute("data", data);
-        return "soma-dia"; // Certifique-se de ter a view soma-dia.html
+        return "soma-dia";
     }
 }
