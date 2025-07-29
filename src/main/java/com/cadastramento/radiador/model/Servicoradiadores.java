@@ -42,8 +42,6 @@ public class Servicoradiadores {
     @Column(name = "preco")
     private double preco;
 
-    // getters e setters
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

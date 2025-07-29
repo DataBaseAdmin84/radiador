@@ -58,4 +58,19 @@ public class ServicoRadiadoresController {
         model.addAttribute("data", data);
         return "soma-dia";
     }
+    @GetMapping("/soma-semana")
+    public String somaSemana(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
+        BigDecimal somaSemana = servicoRadiadoresService.somarValoresPorSemana(data);
+        model.addAttribute("somaSemana", somaSemana);
+        model.addAttribute("dataSemana", data);
+        return "soma-dia";
+    }
+    @GetMapping("soma-mes")
+    public String somaMes(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
+        BigDecimal somaMes = servicoRadiadoresService.somarValoresPorMes(data);
+        model.addAttribute("somaMes", somaMes);
+        model.addAttribute("dataMes", data);
+        return "soma-dia";
+    }
+
 }

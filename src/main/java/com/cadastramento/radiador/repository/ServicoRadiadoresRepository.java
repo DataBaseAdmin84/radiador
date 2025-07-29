@@ -10,4 +10,4 @@ import java.util.List;
 @Repository
 public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiadores, Long> {
     List<Servicoradiadores> findByData(LocalDate data);
-}
+    List<Servicoradiadores> findByDataBetween(LocalDate start, LocalDate end);}

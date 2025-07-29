@@ -48,4 +48,23 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
                 .map(servico -> BigDecimal.valueOf(servico.getPreco()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+    @Override
+    public BigDecimal somarValoresPorSemana(LocalDate data) {
+        LocalDate startOfWeek = data.with(java.time.DayOfWeek.MONDAY);
+        LocalDate endOfWeek = data.with(java.time.DayOfWeek.SUNDAY);
+        return servicoRadiadoresRepository.findByDataBetween(startOfWeek, endOfWeek)
+                .stream()
+                .map(servico -> BigDecimal.valueOf(servico.getPreco()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+    @Override
+    public BigDecimal somarValoresPorMes(LocalDate data) {
+        LocalDate startOfMonth = data.withDayOfMonth(1);
+        LocalDate endOfMonth = data.withDayOfMonth(data.lengthOfMonth());
+        return servicoRadiadoresRepository.findByDataBetween(startOfMonth, endOfMonth)
+                .stream()
+                .map(servico -> BigDecimal.valueOf(servico.getPreco()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }

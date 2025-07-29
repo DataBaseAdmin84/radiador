@@ -155,6 +155,28 @@
         <button type="submit">Calcular Soma</button>
     </form>
 
+    <!-- Formulário para soma dos valores da semana -->
+    <form th:action="@{/servicos/soma-semana}" method="get" style="margin-bottom:20px;">
+        <label for="dataSemana">Somar valores da semana:</label>
+        <input type="date" id="dataSemana" name="data" required>
+        <button type="submit">Calcular Semana</button>
+    </form>
+    <div th:if="${somaSemana != null}" style="margin-bottom:20px;">
+        <strong>Soma dos valores da semana:</strong>
+        <span th:text="${somaSemana}"></span>
+    </div>
+
+    <!-- Formulário para soma dos valores do mês -->
+    <form th:action="@{/servicos/soma-mes}" method="get" style="margin-bottom:20px;">
+        <label for="dataMes">Somar valores do mês:</label>
+        <input type="date" id="dataMes" name="data" required>
+        <button type="submit">Calcular Mês</button>
+    </form>
+    <div th:if="${somaMes != null}" style="margin-bottom:20px;">
+        <strong>Soma dos valores do mês:</strong>
+        <span th:text="${somaMes}"></span>
+    </div>
+
     <div th:if="${somaDia != null}" style="margin-bottom:20px;">
         <strong>Soma dos valores do dia:</strong>
         <span th:text="${somaDia}"></span>

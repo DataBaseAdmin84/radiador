@@ -87,10 +87,33 @@
             <input type="date" id="data" name="data" th:value="${data}">
             <button type="submit">Somar</button>
         </form>
-
         <div th:if="${soma != null}" class="result">
             <h2>Data selecionada: <span th:text="${data}"></span></h2>
             <h2>Soma total: <span th:text="${soma}"></span></h2>
+            <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+        </div>
+
+        <!-- Formulário para soma da semana -->
+        <form th:action="@{/servicos/soma-semana}" method="get" style="margin-top:24px;">
+            <label for="dataSemana">Somar valores da semana:</label>
+            <input type="date" id="dataSemana" name="data" required>
+            <button type="submit">Calcular Semana</button>
+        </form>
+        <div th:if="${somaSemana != null}" class="result">
+            <h2>Semana da data: <span th:text="${dataSemana}"></span></h2>
+            <h2>Soma da semana: <span th:text="${somaSemana}"></span></h2>
+            <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+        </div>
+
+        <!-- Formulário para soma do mês -->
+        <form th:action="@{/servicos/soma-mes}" method="get" style="margin-top:24px;">
+            <label for="dataMes">Somar valores do mês:</label>
+            <input type="date" id="dataMes" name="data" required>
+            <button type="submit">Calcular Mês</button>
+        </form>
+        <div th:if="${somaMes != null}" class="result">
+            <h2>Mês da data: <span th:text="${dataMes}"></span></h2>
+            <h2>Soma do mês: <span th:text="${somaMes}"></span></h2>
             <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
         </div>
     </div>
