@@ -1,5 +1,6 @@
 package com.cadastramento.radiador.ServicoRadiadoresController;
 
+import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
 import jakarta.validation.Valid;
@@ -71,6 +72,21 @@ public class ServicoRadiadoresController {
         model.addAttribute("somaMes", somaMes);
         model.addAttribute("dataMes", data);
         return "soma-dia";
+    }
+    @GetMapping("/relatorio-semana")
+    public String relatorioSemana(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
+        List<RadiadorDTO> radiadoresSemana = servicoRadiadoresService.buscarRadiadoresPorSemana(data);
+        model.addAttribute("radiadoresSemana", radiadoresSemana);
+        model.addAttribute("dataSemana", data);
+        return "relatorio-semana";
+    }
+
+    @GetMapping("/relatorio-mensal")
+    public String relatorioMes(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
+        List<RadiadorDTO> radiadoresMes = servicoRadiadoresService.buscarRadiadoresPorMes(data);
+        model.addAttribute("radiadoresMes", radiadoresMes);
+        model.addAttribute("dataMes", data);
+        return "relatorio-mensal";
     }
 
 }

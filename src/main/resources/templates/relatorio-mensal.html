@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Relatório Mensal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h1>Relatório Mensal</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Radiador</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r : ${radiadoresMes}">
+                <td th:text="${r.nome}"></td>
+                <td th:text="${r.valor}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+</body>
+</html>

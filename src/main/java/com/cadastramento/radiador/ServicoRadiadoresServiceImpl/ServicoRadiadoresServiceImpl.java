@@ -1,5 +1,6 @@
 package com.cadastramento.radiador.ServicoRadiadoresServiceImpl;
 
+import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.repository.ServicoRadiadoresRepository;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
@@ -65,6 +66,16 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
                 .stream()
                 .map(servico -> BigDecimal.valueOf(servico.getPreco()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public List<RadiadorDTO> buscarRadiadoresPorSemana(LocalDate data) {
+        return List.of();
+    }
+
+    @Override
+    public List<RadiadorDTO> buscarRadiadoresPorMes(LocalDate data) {
+        return List.of();
     }
 
 }

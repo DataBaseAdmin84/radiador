@@ -172,6 +172,17 @@
         <input type="date" id="dataMes" name="data" required>
         <button type="submit">Calcular Mês</button>
     </form>
+    <form method="get" th:action="@{/servicos/relatorio-semana}">
+        <label for="dataSemana">Data da Semana:</label>
+        <input type="date" id="dataSemana" name="data" required>
+        <button type="submit">Gerar Relatório Semanal</button>
+    </form>
+
+    <form method="get" th:action="@{/servicos/relatorio-mensal}">
+        <label for="dataMes">Data do Mês:</label>
+        <input type="date" id="dataMes" name="data" required>
+        <button type="submit">Gerar Relatório Mensal</button>
+    </form>
     <div th:if="${somaMes != null}" style="margin-bottom:20px;">
         <strong>Soma dos valores do mês:</strong>
         <span th:text="${somaMes}"></span>
