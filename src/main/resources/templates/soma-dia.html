@@ -93,7 +93,6 @@
             <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
         </div>
 
-        <!-- Formulário para soma da semana -->
         <form th:action="@{/servicos/soma-semana}" method="get" style="margin-top:24px;">
             <label for="dataSemana">Somar valores da semana:</label>
             <input type="date" id="dataSemana" name="data" required>
@@ -105,7 +104,7 @@
             <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
         </div>
 
-        <!-- Formulário para soma do mês -->
+
         <form th:action="@{/servicos/soma-mes}" method="get" style="margin-top:24px;">
             <label for="dataMes">Somar valores do mês:</label>
             <input type="date" id="dataMes" name="data" required>

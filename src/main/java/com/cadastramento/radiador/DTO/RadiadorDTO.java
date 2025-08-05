@@ -8,7 +8,6 @@ public class RadiadorDTO {
     private String nome;
     private BigDecimal valor;
 
-    // Construtores
     public RadiadorDTO() {}
 
     public RadiadorDTO(String nome, BigDecimal valor) {
@@ -16,7 +15,6 @@ public class RadiadorDTO {
         this.valor = valor;
     }
 
-    // Getters e Setters
     public String getNome() {
         return nome;
     }
