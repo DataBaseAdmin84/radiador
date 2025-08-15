@@ -156,8 +156,8 @@
     </form>
 
     <form th:action="@{/servicos/soma-semana}" method="get" style="margin-bottom:20px;">
-        <label for="dataSemana">Somar valores da semana:</label>
-        <input type="date" id="dataSemana" name="data" required>
+        <label for="dataSomaSemana">Somar valores da semana:</label>
+        <input type="date" id="dataSomaSemana" name="data" required>
         <button type="submit">Calcular Semana</button>
     </form>
     <div th:if="${somaSemana != null}" style="margin-bottom:20px;">
@@ -166,19 +166,19 @@
     </div>
 
     <form th:action="@{/servicos/soma-mes}" method="get" style="margin-bottom:20px;">
-        <label for="dataMes">Somar valores do mês:</label>
-        <input type="date" id="dataMes" name="data" required>
+        <label for="dataSomaMes">Somar valores do mês:</label>
+        <input type="date" id="dataSomaMes" name="data" required>
         <button type="submit">Calcular Mês</button>
     </form>
     <form method="get" th:action="@{/servicos/relatorio-semana}">
-        <label for="dataSemana">Data da Semana:</label>
-        <input type="date" id="dataSemana" name="data" required>
+        <label for="dataRelatorioSemana">Data da Semana:</label>
+        <input type="date" id="dataRelatorioSemana" name="data" required>
         <button type="submit">Gerar Relatório Semanal</button>
     </form>
 
     <form method="get" th:action="@{/servicos/relatorio-mensal}">
-        <label for="dataMes">Data do Mês:</label>
-        <input type="date" id="dataMes" name="data" required>
+        <label for="dataRelatorioMes">Data do Mês:</label>
+        <input type="date" id="dataRelatorioMes" name="data" required>
         <button type="submit">Gerar Relatório Mensal</button>
     </form>
     <div th:if="${somaMes != null}" style="margin-bottom:20px;">
