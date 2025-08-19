@@ -1,25 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Relatório Semanal</title>
+    <meta charset="UTF-8">
+    <title>Relatório Semanal de Serviços</title>
+    <!-- Reutilizando o estilo do formulário principal para consistência -->
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn-voltar {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-voltar:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <h1>Relatório Semanal</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Radiador</th>
-                <th>Valor</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="r : ${radiadoresSemana}">
-                <td th:text="${r.nome}"></td>
-                <td th:text="${r.valor}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+    <div class="container">
+        <h1>Relatório Semanal</h1>
+        <h2 th:text="'Serviços de ' + ${#dates.format(dataInicio, 'dd/MM/yyyy')} + ' a ' + ${#dates.format(dataFim, 'dd/MM/yyyy')}">Período do Relatório</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Serviço</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="servico : ${servicosDaSemana}">
+                    <td th:text="${#dates.format(servico.data, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${servico.cliente}"></td>
+                    <td th:text="${servico.modelo} + ' - ' + ${servico.servicoExecutado}"></td>
+                    <td th:text="${#numbers.formatCurrency(servico.preco)}"></td>
+                </tr>
+                <!-- Mensagem para quando não houver serviços -->
+                <tr th:if="${#lists.isEmpty(servicosDaSemana)}">
+                    <td colspan="4" style="text-align: center;">Nenhum serviço encontrado para este período.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+    </div>
 </body>
 </html>

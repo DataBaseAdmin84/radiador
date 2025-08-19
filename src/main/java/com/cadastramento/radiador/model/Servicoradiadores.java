@@ -1,4 +1,3 @@
-// src/main/java/com/cadastramento/radiador/model/Servicoradiadores.java
 package com.cadastramento.radiador.model;
 
 import jakarta.persistence.*;
