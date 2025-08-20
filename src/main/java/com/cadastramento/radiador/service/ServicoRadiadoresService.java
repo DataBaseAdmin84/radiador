@@ -6,6 +6,7 @@ import com.cadastramento.radiador.model.Servicoradiadores;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public interface ServicoRadiadoresService {
@@ -18,6 +19,8 @@ public interface ServicoRadiadoresService {
     java.math.BigDecimal somarValoresPorData(java.time.LocalDate data);
     BigDecimal somarValoresPorSemana(LocalDate data);
     BigDecimal somarValoresPorMes(LocalDate data);
+
+    List<RadiadorDTO> buscarRadiadoresPorDia(LocalDate data);
 
     List<RadiadorDTO> buscarRadiadoresPorSemana(LocalDate data);
 

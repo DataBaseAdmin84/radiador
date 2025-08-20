@@ -78,4 +78,10 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
         return List.of();
     }
 
+    @Override
+    public List<RadiadorDTO> buscarRadiadoresPorDia(LocalDate data){
+        return List.of();
+
+    }
+
 }

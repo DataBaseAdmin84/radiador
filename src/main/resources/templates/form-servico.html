@@ -26,7 +26,7 @@
             box-sizing: border-box;
         }
 
-        h1 {
+        h1, h2 {
             color: #333;
             text-align: left;
             margin-bottom: 30px;
@@ -63,10 +63,6 @@
             font-size: 1em;
         }
 
-        input[type="date"] {
-            padding-right: 30px;
-        }
-
         .btn-salvar {
             background-color: #007bff;
             color: white;
@@ -75,13 +71,59 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 1.1em;
-            margin-top: 20px;
+            margin-top: 10px;
             display: inline-block;
         }
 
         .btn-salvar:hover {
             background-color: #0056b3;
         }
+
+        /* --- NOVOS ESTILOS PARA RELATÓRIOS --- */
+        .reports-container {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .report-forms {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .report-form {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .report-form label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .report-form button {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .report-form button:hover {
+            background-color: #5a6268;
+        }
+        /* --- FIM DOS NOVOS ESTILOS --- */
 
         table {
             width: 100%;
@@ -90,23 +132,24 @@
         }
         th, td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 12px;
             text-align: left;
         }
         th {
             background: #f0f0f0;
+            font-weight: bold;
         }
 
-        @media (max-width: 600px) {
-            .form-row {
+        @media (max-width: 768px) {
+            .form-row, .report-forms {
                 flex-direction: column;
                 gap: 0;
             }
             .form-group {
                 margin-bottom: 15px;
             }
-            .form-group:last-child {
-                margin-bottom: 0;
+            .report-form {
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -114,86 +157,71 @@
 <body>
 <div class="container">
     <h1>Radiadores Emerson</h1>
-    <h2>Cadastro de Serviço de Radiadores</h2>
-    <form th:action="@{/servicos}" method="post">
+    <h2>Cadastro de Serviço</h2>
+    <form th:action="@{/servicos}" method="post" th:object="${servico}">
         <div class="form-row">
             <div class="form-group">
                 <label for="modelo">Modelo</label>
-                <input type="text" id="modelo" name="modelo" placeholder="Ex: Gol, Uno" required>
+                <input type="text" id="modelo" th:field="*{modelo}" placeholder="Ex: Gol, Uno" required>
             </div>
             <div class="form-group">
                 <label for="tipo">Tipo</label>
-                <input type="text" id="tipo" name="tipo" placeholder="Ex: Radiador, Intercooler" required>
+                <input type="text" id="tipo" th:field="*{tipo}" placeholder="Ex: Radiador, Intercooler" required>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group">
                 <label for="servicoExecutado">Serviço Executado</label>
-                <input type="text" id="servicoExecutado" name="servicoExecutado" placeholder="Ex: Troca, Limpeza" required>
+                <input type="text" id="servicoExecutado" th:field="*{servicoExecutado}" placeholder="Ex: Troca, Limpeza" required>
             </div>
             <div class="form-group">
                 <label for="cliente">Cliente</label>
-                <input type="text" id="cliente" name="cliente" placeholder="Ex: Nome do cliente">
+                <input type="text" id="cliente" th:field="*{cliente}" placeholder="Ex: Nome do cliente">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group">
                 <label for="data">Data</label>
-                <input type="date" id="data" name="data" placeholder="dd/mm/aaaa">
+                <input type="date" id="data" th:field="*{data}" required>
             </div>
             <div class="form-group">
                 <label for="preco">Preço</label>
-                <input type="number" id="preco" name="preco" step="0.01" min="0" placeholder="Ex: 150.00">
+                <input type="number" id="preco" th:field="*{preco}" step="0.01" min="0" placeholder="Ex: 150.00" required>
             </div>
         </div>
         <button type="submit" class="btn-salvar">Salvar</button>
     </form>
 
-    <!-- Formulário para soma dos valores do dia -->
-    <form th:action="@{/servicos/soma-dia}" method="get" style="margin-top:30px; margin-bottom:20px;">
-        <label for="dataSoma">Somar valores do dia:</label>
-        <input type="date" id="dataSoma" name="data" required>
-        <button type="submit">Calcular Soma</button>
-    </form>
+    <!-- Seção de Relatórios e Somas -->
+    <div class="reports-container">
+        <h2>Relatórios e Somas</h2>
+        <div class="report-forms">
+            <!-- Soma e Detalhes do Dia -->
+            <form th:action="@{/servicos/soma-dia}" method="get" class="report-form">
+                <label for="dataSomaDia">Consultar Total do Dia</label>
+                <input type="date" id="dataSomaDia" name="data" required>
+                <button type="submit">Ver Total</button>
+            </form>
 
-    <form th:action="@{/servicos/soma-semana}" method="get" style="margin-bottom:20px;">
-        <label for="dataSomaSemana">Somar valores da semana:</label>
-        <input type="date" id="dataSomaSemana" name="data" required>
-        <button type="submit">Calcular Semana</button>
-    </form>
-    <div th:if="${somaSemana != null}" style="margin-bottom:20px;">
-        <strong>Soma dos valores da semana:</strong>
-        <span th:text="${somaSemana}"></span>
-    </div>
+            <!-- Relatório Semanal -->
+            <form th:action="@{/servicos/relatorio-semana}" method="get" class="report-form">
+                <label for="dataRelatorioSemana">Relatório Semanal</label>
+                <input type="date" id="dataRelatorioSemana" name="data" required>
+                <button type="submit">Gerar Relatório</button>
+            </form>
 
-    <form th:action="@{/servicos/soma-mes}" method="get" style="margin-bottom:20px;">
-        <label for="dataSomaMes">Somar valores do mês:</label>
-        <input type="date" id="dataSomaMes" name="data" required>
-        <button type="submit">Calcular Mês</button>
-    </form>
-    <form method="get" th:action="@{/servicos/relatorio-semana}">
-        <label for="dataRelatorioSemana">Data da Semana:</label>
-        <input type="date" id="dataRelatorioSemana" name="data" required>
-        <button type="submit">Gerar Relatório Semanal</button>
-    </form>
-
-    <form method="get" th:action="@{/servicos/relatorio-mensal}">
-        <label for="dataRelatorioMes">Data do Mês:</label>
-        <input type="date" id="dataRelatorioMes" name="data" required>
-        <button type="submit">Gerar Relatório Mensal</button>
-    </form>
-    <div th:if="${somaMes != null}" style="margin-bottom:20px;">
-        <strong>Soma dos valores do mês:</strong>
-        <span th:text="${somaMes}"></span>
-    </div>
-
-    <div th:if="${somaDia != null}" style="margin-bottom:20px;">
-        <strong>Soma dos valores do dia:</strong>
-        <span th:text="${somaDia}"></span>
+            <!-- Relatório Mensal -->
+            <form th:action="@{/servicos/relatorio-mensal}" method="get" class="report-form">
+                <label for="dataRelatorioMes">Relatório Mensal</label>
+                <input type="date" id="dataRelatorioMes" name="data" required>
+                <button type="submit">Gerar Relatório</button>
+            </form>
+        </div>
     </div>
 
     <h2>Serviços Cadastrados</h2>
     <table>
+        <thead>
         <tr>
             <th>Modelo</th>
             <th>Tipo</th>
@@ -202,16 +230,17 @@
             <th>Data</th>
             <th>Preço</th>
         </tr>
-        <th:block th:each="servico : ${servicos}">
-            <tr>
-                <td th:text="${servico.modelo}"></td>
-                <td th:text="${servico.tipo}"></td>
-                <td th:text="${servico.servicoExecutado}"></td>
-                <td th:text="${servico.cliente}"></td>
-                <td th:text="${servico.data}"></td>
-                <td th:text="${servico.preco}"></td>
-            </tr>
-        </th:block>
+        </thead>
+        <tbody>
+        <tr th:each="servico : ${servicos}">
+            <td th:text="${servico.modelo}"></td>
+            <td th:text="${servico.tipo}"></td>
+            <td th:text="${servico.servicoExecutado}"></td>
+            <td th:text="${servico.cliente}"></td>
+            <td th:text="${servico.data != null ? #temporals.format(servico.data, 'dd/MM/yyyy') : ''}"></td>
+            <td th:text="${servico.preco != null ? 'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA') : ''}"></td>
+        </tr>
+        </tbody>
     </table>
 </div>
 </body>

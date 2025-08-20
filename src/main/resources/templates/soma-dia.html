@@ -88,9 +88,33 @@
             <button type="submit">Somar</button>
         </form>
         <div th:if="${soma != null}" class="result">
-            <h2>Data selecionada: <span th:text="${data}"></span></h2>
-            <h2>Soma total: <span th:text="${soma}"></span></h2>
+            <!-- Melhorando a formatação da data e do valor monetário -->
+            <h2>Data selecionada: <span th:text="${#temporals.format(data, 'dd/MM/yyyy')}"></span></h2>
+            <h2>Soma total: <span th:text="${'R$ ' + #numbers.formatDecimal(soma, 1, 'POINT', 2, 'COMMA')}"></span></h2>
             <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+        </div>
+
+        <!-- Tabela com os detalhes dos serviços do dia -->
+        <div th:if="${radiadores != null and not #lists.isEmpty(radiadores)}" style="margin-top: 30px;">
+            <h3 style="text-align: center; color: #333;">Detalhes dos Serviços do Dia</h3>
+            <table style="width:100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+                <thead>
+                <tr style="background-color: #f0f0f0;">
+                    <th style="padding: 10px; border: 1px solid #ddd;">Modelo</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Tipo</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Serviço</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Preço</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="rad : ${radiadores}">
+                    <td th:text="${rad.modelo}" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td th:text="${rad.tipo}" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td th:text="${rad.servicoExecutado}" style="padding: 10px; border: 1px solid #ddd;"></td>
+                    <td th:text="${'R$ ' + #numbers.formatDecimal(rad.preco, 1, 'POINT', 2, 'COMMA')}" style="padding: 10px; border: 1px solid #ddd; text-align: right;"></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <form th:action="@{/servicos/soma-semana}" method="get" style="margin-top:24px;">

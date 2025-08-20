@@ -55,6 +55,8 @@ public class ServicoRadiadoresController {
     @GetMapping("/soma-dia")
     public String mostrarSomaPorDia(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
         BigDecimal soma = servicoRadiadoresService.somarValoresPorData(data);
+        List<RadiadorDTO> radiadores = servicoRadiadoresService.buscarRadiadoresPorDia(data);
+        model.addAttribute("radiadores", radiadores);
         model.addAttribute("soma", soma);
         model.addAttribute("data", data);
         return "soma-dia";
