@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Relatório Semanal de Serviços</title>
     <!-- Reutilizando o estilo do formulário principal para consistência -->
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="/css/style.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,6 +17,17 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .btn-pdf {
+            background-color: #c0392b; /* Cor vermelha para PDF */
+            padding: 10px 20px;
+            color: white;
         }
         .btn-voltar {
             display: inline-block;
@@ -60,7 +71,12 @@
             </tbody>
         </table>
 
-        <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+        <!-- Esta seção de ações só será exibida se NÃO estivermos no modo de geração de PDF -->
+        <div class="actions" th:if="${isPdfMode == null or !isPdfMode}">
+            <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+            <!-- O parâmetro 'data' foi adicionado ao model no controller -->
+            <a th:href="@{/servicos/relatorio-semana/pdf(data=${data})}" class="btn-voltar btn-pdf">Baixar PDF</a>
+        </div>
     </div>
 </body>
 </html>

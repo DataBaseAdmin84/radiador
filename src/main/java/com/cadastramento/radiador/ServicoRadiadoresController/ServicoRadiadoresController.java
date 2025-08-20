@@ -2,6 +2,7 @@ package com.cadastramento.radiador.ServicoRadiadoresController;
 
 import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
+import com.cadastramento.radiador.service.PdfGenerationService;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/servicos")
@@ -24,6 +30,9 @@ public class ServicoRadiadoresController {
 
     @Autowired
     private ServicoRadiadoresService servicoRadiadoresService;
+
+    @Autowired
+    private PdfGenerationService pdfGenerationService;
 
     @GetMapping
     public String exibirFormularioEListagem(Model model) {
@@ -91,6 +100,7 @@ public class ServicoRadiadoresController {
         // 3. Adiciona os dados ao model com os nomes que o HTML espera
         model.addAttribute("servicosDaSemana", servicosDaSemana); // Nome corrigido
         model.addAttribute("dataInicio", dataInicio); // Data de início adicionada
+        model.addAttribute("data", data); // Passa a data original para o link do PDF
         model.addAttribute("dataFim", dataFim);       // Data de fim adicionada
 
         return "relatorio-semana";
@@ -106,6 +116,32 @@ public class ServicoRadiadoresController {
         model.addAttribute("dataFim", data.with(TemporalAdjusters.lastDayOfMonth()));
         model.addAttribute("data", data); // Para o título do relatório mensal
         return "relatorio-mensal";
+    }
+
+    @GetMapping("/relatorio-semana/pdf")
+    public ResponseEntity<byte[]> gerarPdfRelatorioSemana(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        List<RadiadorDTO> servicosDaSemana = servicoRadiadoresService.buscarRadiadoresPorSemana(data);
+
+        WeekFields weekFields = WeekFields.of(java.util.Locale.getDefault());
+        LocalDate dataInicio = data.with(weekFields.dayOfWeek(), 1);
+        LocalDate dataFim = dataInicio.plusDays(6);
+
+        // Prepara os dados para o template
+        Map<String, Object> modelAttributes = Map.of(
+                "servicosDaSemana", servicosDaSemana,
+                "dataInicio", dataInicio,
+                "dataFim", dataFim,
+                "isPdfMode", true // Sinalizador para o template saber que é uma renderização de PDF
+        );
+
+        ByteArrayOutputStream pdfStream = pdfGenerationService.generatePdfFromTemplate("relatorio-semana", modelAttributes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        String filename = "relatorio-semanal-" + data.toString() + ".pdf";
+        headers.setContentDispositionFormData("attachment", filename);
+
+        return ResponseEntity.ok().headers(headers).body(pdfStream.toByteArray());
     }
 
 }
