@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "servicoradiadores")
@@ -39,7 +39,7 @@ public class Servicoradiadores {
 
     @NotNull
     @Column(name = "preco")
-    private double preco;
+    private BigDecimal preco;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -59,6 +59,6 @@ public class Servicoradiadores {
     public LocalDate getData() { return data; }
     public void setData(LocalDate data) { this.data = data; }
 
-    public double getPreco() { return preco; }
-    public void setPreco(double preco) { this.preco = preco; }
+    public @NotNull BigDecimal getPreco() { return preco; }
+    public void setPreco(@NotNull BigDecimal preco) { this.preco = preco; }
 }

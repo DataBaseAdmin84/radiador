@@ -9,79 +9,75 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
 public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
 
     @Autowired
-    private ServicoRadiadoresRepository servicoRadiadoresRepository;
+    private ServicoRadiadoresRepository repository;
 
     @Override
     public Servicoradiadores salvarServico(Servicoradiadores servico) {
-        return servicoRadiadoresRepository.save(servico);
-    }
-
-    @Override
-    public List<Servicoradiadores> buscarTodosServicos() {
-        return servicoRadiadoresRepository.findAll();
+        return repository.save(servico);
     }
 
     @Override
     public Optional<Servicoradiadores> buscarServicoPorId(Long id) {
-        return servicoRadiadoresRepository.findById(id);
+        return repository.findById(id);
     }
 
     @Override
     public void deletarServico(Long id) {
-        servicoRadiadoresRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     @Override
     public List<Servicoradiadores> listarTodos() {
-        return servicoRadiadoresRepository.findAll();
+        return repository.findAll();
     }
+
     @Override
     public BigDecimal somarValoresPorData(LocalDate data) {
-        return servicoRadiadoresRepository.findByData(data)
-                .stream()
-                .map(servico -> BigDecimal.valueOf(servico.getPreco()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return repository.sumPrecoByDataBetween(data, data);
     }
+
     @Override
     public BigDecimal somarValoresPorSemana(LocalDate data) {
-        LocalDate startOfWeek = data.with(java.time.DayOfWeek.MONDAY);
-        LocalDate endOfWeek = data.with(java.time.DayOfWeek.SUNDAY);
-        return servicoRadiadoresRepository.findByDataBetween(startOfWeek, endOfWeek)
-                .stream()
-                .map(servico -> BigDecimal.valueOf(servico.getPreco()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        LocalDate inicioSemana = data.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
+        LocalDate fimSemana = inicioSemana.plusDays(6);
+        return repository.sumPrecoByDataBetween(inicioSemana, fimSemana);
     }
+
     @Override
     public BigDecimal somarValoresPorMes(LocalDate data) {
-        LocalDate startOfMonth = data.withDayOfMonth(1);
-        LocalDate endOfMonth = data.withDayOfMonth(data.lengthOfMonth());
-        return servicoRadiadoresRepository.findByDataBetween(startOfMonth, endOfMonth)
-                .stream()
-                .map(servico -> BigDecimal.valueOf(servico.getPreco()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        LocalDate inicioMes = data.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate fimMes = data.with(TemporalAdjusters.lastDayOfMonth());
+        return repository.sumPrecoByDataBetween(inicioMes, fimMes);
+    }
+
+    @Override
+    public List<RadiadorDTO> buscarRadiadoresPorDia(LocalDate data) {
+        return repository.findServicosAsDTOByData(data);
     }
 
     @Override
     public List<RadiadorDTO> buscarRadiadoresPorSemana(LocalDate data) {
-        return List.of();
+        // A lógica de cálculo de datas é a mesma da soma
+        LocalDate inicioSemana = data.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
+        LocalDate fimSemana = inicioSemana.plusDays(6);
+        return repository.findServicosAsDTOByDataBetween(inicioSemana, fimSemana);
     }
 
     @Override
     public List<RadiadorDTO> buscarRadiadoresPorMes(LocalDate data) {
-        return List.of();
+        // A lógica de cálculo de datas é a mesma da soma
+        LocalDate inicioMes = data.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate fimMes = data.with(TemporalAdjusters.lastDayOfMonth());
+        return repository.findServicosAsDTOByDataBetween(inicioMes, fimMes);
     }
-
-    @Override
-    public List<RadiadorDTO> buscarRadiadoresPorDia(LocalDate data){
-        return List.of();
-
-    }
-
 }

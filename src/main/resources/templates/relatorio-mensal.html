@@ -34,7 +34,7 @@
 <body>
 <div class="container">
     <h1>Relatório Mensal</h1>
-    <h2 th:text="'Serviços de ' + ${#dates.format(data, 'MMMM ''de'' yyyy')}">Período do Relatório</h2>
+    <h2 th:text="'Serviços de ' + ${#temporals.format(data, 'MMMM ''de'' yyyy', new java.util.Locale('pt', 'BR'))}">Período do Relatório</h2>
 
     <table>
         <thead>
@@ -47,10 +47,10 @@
         </thead>
         <tbody>
         <tr th:each="servico : ${servicosDoMes}">
-            <td th:text="${#dates.format(servico.data, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
             <td th:text="${servico.cliente}"></td>
             <td th:text="${servico.modelo} + ' - ' + ${servico.servicoExecutado}"></td>
-            <td th:text="${#numbers.formatCurrency(servico.preco)}"></td>
+            <td th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
         </tr>
         <tr th:if="${#lists.isEmpty(servicosDoMes)}">
             <td colspan="4" style="text-align: center;">Nenhum serviço encontrado para este mês.</td>

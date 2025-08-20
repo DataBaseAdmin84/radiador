@@ -35,7 +35,7 @@
 <body>
     <div class="container">
         <h1>Relatório Semanal</h1>
-        <h2 th:text="'Serviços de ' + ${#dates.format(dataInicio, 'dd/MM/yyyy')} + ' a ' + ${#dates.format(dataFim, 'dd/MM/yyyy')}">Período do Relatório</h2>
+        <h2 th:text="'Serviços de ' + ${#temporals.format(dataInicio, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(dataFim, 'dd/MM/yyyy')}">Período do Relatório</h2>
 
         <table>
             <thead>
@@ -48,10 +48,10 @@
             </thead>
             <tbody>
                 <tr th:each="servico : ${servicosDaSemana}">
-                    <td th:text="${#dates.format(servico.data, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
                     <td th:text="${servico.cliente}"></td>
                     <td th:text="${servico.modelo} + ' - ' + ${servico.servicoExecutado}"></td>
-                    <td th:text="${#numbers.formatCurrency(servico.preco)}"></td>
+                    <td th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
                 </tr>
                 <!-- Mensagem para quando não houver serviços -->
                 <tr th:if="${#lists.isEmpty(servicosDaSemana)}">

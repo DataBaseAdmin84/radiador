@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.List;
 
 @Controller
@@ -68,26 +70,41 @@ public class ServicoRadiadoresController {
         model.addAttribute("dataSemana", data);
         return "soma-dia";
     }
-    @GetMapping("soma-mes")
+    @GetMapping("/soma-mes") // Corrigido: adicionada a barra inicial
     public String somaMes(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
         BigDecimal somaMes = servicoRadiadoresService.somarValoresPorMes(data);
         model.addAttribute("somaMes", somaMes);
         model.addAttribute("dataMes", data);
         return "soma-dia";
     }
+
     @GetMapping("/relatorio-semana")
     public String relatorioSemana(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
-        List<RadiadorDTO> radiadoresSemana = servicoRadiadoresService.buscarRadiadoresPorSemana(data);
-        model.addAttribute("radiadoresSemana", radiadoresSemana);
-        model.addAttribute("dataSemana", data);
+        // 1. Busca a lista de serviços
+        List<RadiadorDTO> servicosDaSemana = servicoRadiadoresService.buscarRadiadoresPorSemana(data);
+
+        // 2. Calcula as datas de início e fim da semana para o título
+        WeekFields weekFields = WeekFields.of(java.util.Locale.getDefault());
+        LocalDate dataInicio = data.with(weekFields.dayOfWeek(), 1);
+        LocalDate dataFim = dataInicio.plusDays(6);
+
+        // 3. Adiciona os dados ao model com os nomes que o HTML espera
+        model.addAttribute("servicosDaSemana", servicosDaSemana); // Nome corrigido
+        model.addAttribute("dataInicio", dataInicio); // Data de início adicionada
+        model.addAttribute("dataFim", dataFim);       // Data de fim adicionada
+
         return "relatorio-semana";
     }
 
     @GetMapping("/relatorio-mensal")
     public String relatorioMes(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
-        List<RadiadorDTO> radiadoresMes = servicoRadiadoresService.buscarRadiadoresPorMes(data);
-        model.addAttribute("radiadoresMes", radiadoresMes);
-        model.addAttribute("dataMes", data);
+        List<RadiadorDTO> servicosDoMes = servicoRadiadoresService.buscarRadiadoresPorMes(data);
+
+        // Adiciona os dados ao model com os nomes corretos que o HTML espera
+        model.addAttribute("servicosDoMes", servicosDoMes); // Nome corrigido
+        model.addAttribute("dataInicio", data.with(TemporalAdjusters.firstDayOfMonth()));
+        model.addAttribute("dataFim", data.with(TemporalAdjusters.lastDayOfMonth()));
+        model.addAttribute("data", data); // Para o título do relatório mensal
         return "relatorio-mensal";
     }
 
