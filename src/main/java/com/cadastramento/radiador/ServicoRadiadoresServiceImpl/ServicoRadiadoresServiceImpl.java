@@ -1,5 +1,6 @@
 package com.cadastramento.radiador.ServicoRadiadoresServiceImpl;
 
+import com.cadastramento.radiador.DTO.FaturamentoDiarioDTO;
 import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.repository.ServicoRadiadoresRepository;
@@ -15,7 +16,10 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
@@ -86,5 +90,24 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
         LocalDate inicioMes = data.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate fimMes = data.with(TemporalAdjusters.lastDayOfMonth());
         return repository.findServicosAsDTOByDataBetween(inicioMes, fimMes);
+    }
+
+    @Override
+    public List<FaturamentoDiarioDTO> getFaturamentoDosUltimosDias(int dias) {
+        LocalDate dataFim = LocalDate.now();
+        LocalDate dataInicio = dataFim.minusDays(dias - 1);
+
+        // 1. Fetch aggregated data from the database in one go.
+        List<FaturamentoDiarioDTO> faturamentoDoPeriodo = repository.findFaturamentoDiarioBetween(dataInicio, dataFim);
+
+        // 2. Create a map for quick lookup of days that had revenue.
+        Map<LocalDate, BigDecimal> faturamentoMap = faturamentoDoPeriodo.stream()
+                .collect(Collectors.toMap(FaturamentoDiarioDTO::getData, FaturamentoDiarioDTO::getTotal));
+
+        // 3. Generate the complete list for the 'dias', filling in 0 for days with no sales.
+        return IntStream.range(0, dias)
+                .mapToObj(i -> dataInicio.plusDays(i))
+                .map(data -> new FaturamentoDiarioDTO(data, faturamentoMap.getOrDefault(data, BigDecimal.ZERO)))
+                .collect(Collectors.toList());
     }
 }
