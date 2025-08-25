@@ -116,6 +116,7 @@
                 <th class="p-3 border">Cliente</th>
                 <th class="p-3 border">Data</th>
                 <th class="p-3 border">Preço</th>
+                <th class="p-3 border">Ações</th>
             </tr>
             </thead>
             <tbody>
@@ -126,6 +127,16 @@
                 <td class="p-3 border" th:text="${servico.cliente}"></td>
                 <td class="p-3 border" th:text="${servico.data != null ? #temporals.format(servico.data, 'dd/MM/yyyy') : ''}"></td>
                 <td class="p-3 border" th:text="${servico.preco != null ? 'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA') : ''}"></td>
+                <td class="p-3 border text-center">
+                    <div class="flex justify-center items-center space-x-2">
+                        <a th:href="@{/servicos/editar/{id}(id=${servico.id})}"
+                           class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition text-sm">✏️</a>
+                        <form th:action="@{/servicos/deletar/{id}(id=${servico.id})}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este serviço?');">
+                            <button type="submit"
+                                    class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition text-sm">🗑️</button>
+                        </form>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>

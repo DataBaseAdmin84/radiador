@@ -23,6 +23,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/servicos")
@@ -63,6 +64,42 @@ public class ServicoRadiadoresController {
         }
         return "redirect:/servicos";
     }
+
+    @GetMapping("/editar/{id}")
+    public String exibirFormularioEdicao(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Servicoradiadores> servicoOpt = servicoRadiadoresService.buscarServicoPorId(id);
+        if (servicoOpt.isPresent()){
+            model.addAttribute("servico", servicoOpt.get());
+            return "editar-servico";
+        } else {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Serviço não encontrado.");
+            return "redirect:/servicos";
+        }
+    }
+
+    @PostMapping("/editar/{id}")
+    public String atualizarServico(@PathVariable Long id,
+                                   @Valid @ModelAttribute("servico") Servicoradiadores servico,
+                                   BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            return "editar-servico";
+        }
+
+        servico.setId(id);
+        servicoRadiadoresService.salvarServico(servico);
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Serviço atualizado com sucesso!");
+        return "redirect:/servicos";
+    }
+
+    @PostMapping("/deletar/{id}")
+    public String deletarServico(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        servicoRadiadoresService.deletarServico(id);
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Serviço excluído com sucesso!");
+        return "redirect:/servicos";
+    }
+
     @GetMapping("/soma-dia")
     public String mostrarSomaPorDia(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data, Model model) {
         BigDecimal soma = servicoRadiadoresService.somarValoresPorData(data);
