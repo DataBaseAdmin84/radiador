@@ -22,6 +22,15 @@ public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiad
            "FROM Servicoradiadores s WHERE s.data = :data ORDER BY s.id")
     List<RadiadorDTO> findServicosAsDTOByData(@Param("data") LocalDate data);
 
+    /**
+     * Pesquisa por um termo em várias colunas da entidade Servicoradiadores.
+     * A pesquisa é case-insensitive (ignora maiúsculas/minúsculas).
+     */
+    @Query("SELECT s FROM Servicoradiadores s WHERE " +
+           "LOWER(s.modelo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(s.tipo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(s.cliente) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Servicoradiadores> searchByTerm(@Param("termo") String termo);
 
     @Query("SELECT COALESCE(SUM(s.preco), 0) FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim")
     BigDecimal sumPrecoByDataBetween(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);

@@ -42,6 +42,11 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
     }
 
     @Override
+    public List<Servicoradiadores> searchByTerm(String termo) {
+        return repository.searchByTerm(termo);
+    }
+
+    @Override
     public BigDecimal somarValoresPorData(LocalDate data) {
         return repository.sumPrecoByDataBetween(data, data);
     }

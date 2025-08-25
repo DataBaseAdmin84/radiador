@@ -36,11 +36,19 @@ public class ServicoRadiadoresController {
     private PdfGenerationService pdfGenerationService;
 
     @GetMapping
-    public String exibirFormularioEListagem(Model model) {
+    public String exibirFormularioEListagem(@RequestParam(name = "termo", required = false) String termo, Model model) {
         if (!model.containsAttribute("servico")) {
             model.addAttribute("servico", new Servicoradiadores());
         }
-        List<Servicoradiadores> servicos = servicoRadiadoresService.listarTodos();
+
+        List<Servicoradiadores> servicos;
+        if (termo != null && !termo.trim().isEmpty()) {
+            servicos = servicoRadiadoresService.searchByTerm(termo);
+        } else {
+            servicos = servicoRadiadoresService.listarTodos();
+        }
+
+        model.addAttribute("termo", termo); // Passa o termo de volta para o formulário
         model.addAttribute("servicos", servicos);
         return "form-servico";
     }
@@ -168,7 +176,7 @@ public class ServicoRadiadoresController {
                 "servicosDaSemana", servicosDaSemana,
                 "dataInicio", dataInicio,
                 "dataFim", dataFim,
-                "isPdfMode", true // Sinalizador para o template saber que é uma renderização de PDF
+                "isPdfMode", true
         );
 
         ByteArrayOutputStream pdfStream = pdfGenerationService.generatePdfFromTemplate("relatorio-semana", modelAttributes);

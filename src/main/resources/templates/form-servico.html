@@ -105,8 +105,21 @@
     </div>
 
     <!-- Tabela -->
-    <h2 class="text-xl font-semibold text-gray-700 mt-10 mb-4">Serviços Cadastrados</h2>
-    <div class="overflow-x-auto">
+    <div class="mt-10 border-t pt-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-700">Serviços Cadastrados</h2>
+            <!-- Formulário de Pesquisa -->
+            <form th:action="@{/servicos}" method="get" class="flex items-center space-x-2">
+                <input type="text" name="termo" placeholder="Pesquisar por modelo, cliente..."
+                       th:value="${termo}"
+                       class="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">🔍</button>
+                <a th:href="@{/servicos}" class="text-gray-600 hover:text-gray-800 text-sm">Limpar</a>
+            </form>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto mt-4">
         <table class="w-full border-collapse bg-white shadow rounded-lg overflow-hidden">
             <thead>
             <tr class="bg-gray-100 text-left">

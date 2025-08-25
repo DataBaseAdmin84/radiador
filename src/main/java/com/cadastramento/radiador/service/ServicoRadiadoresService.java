@@ -13,6 +13,7 @@ public interface ServicoRadiadoresService {
     Optional<Servicoradiadores> buscarServicoPorId(Long id);
     void deletarServico(Long id);
     List<Servicoradiadores> listarTodos();
+    List<Servicoradiadores> searchByTerm(String termo);
 
     // Métodos para Somas
     BigDecimal somarValoresPorData(LocalDate data);
