@@ -133,7 +133,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="servico : ${servicos}" class="hover:bg-blue-50 transition">
+            <tr th:each="servico : ${servicosPage.content}" class="hover:bg-blue-50 transition">
                 <td class="p-3 border" th:text="${servico.modelo}"></td>
                 <td class="p-3 border" th:text="${servico.tipo}"></td>
                 <td class="p-3 border" th:text="${servico.servicoExecutado}"></td>
@@ -153,6 +153,34 @@
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- Controles de Paginação -->
+    <div th:if="${servicosPage.totalPages > 1}" class="flex justify-center items-center space-x-2 mt-8">
+        <!-- Botão 'Anterior' -->
+        <a th:if="${!servicosPage.first}"
+           th:href="@{/servicos(page=${servicosPage.number - 1}, size=${servicosPage.size}, termo=${termo})}"
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+            &laquo; Anterior
+        </a>
+
+        <!-- Números das Páginas -->
+        <th:block th:each="i : ${#numbers.sequence(0, servicosPage.totalPages - 1)}">
+            <a th:if="${i == servicosPage.number}"
+               class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg"
+               th:text="${i + 1}"></a>
+            <a th:if="${i != servicosPage.number}"
+               th:href="@{/servicos(page=${i}, size=${servicosPage.size}, termo=${termo})}"
+               class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+               th:text="${i + 1}"></a>
+        </th:block>
+
+        <!-- Botão 'Próxima' -->
+        <a th:if="${!servicosPage.last}"
+           th:href="@{/servicos(page=${servicosPage.number + 1}, size=${servicosPage.size}, termo=${termo})}"
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+            Próxima &raquo;
+        </a>
     </div>
 </div>
 

@@ -2,6 +2,8 @@ package com.cadastramento.radiador.service;
 
 import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,8 +14,8 @@ public interface ServicoRadiadoresService {
     Servicoradiadores salvarServico(Servicoradiadores servico);
     Optional<Servicoradiadores> buscarServicoPorId(Long id);
     void deletarServico(Long id);
-    List<Servicoradiadores> listarTodos();
-    List<Servicoradiadores> searchByTerm(String termo);
+    Page<Servicoradiadores> listarTodos(Pageable pageable);
+    Page<Servicoradiadores> searchByTerm(String termo, Pageable pageable);
 
     // Métodos para Somas
     BigDecimal somarValoresPorData(LocalDate data);

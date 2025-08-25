@@ -3,6 +3,8 @@ package com.cadastramento.radiador.repository;
 import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -30,7 +32,7 @@ public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiad
            "LOWER(s.modelo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(s.tipo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(s.cliente) LIKE LOWER(CONCAT('%', :termo, '%'))")
-    List<Servicoradiadores> searchByTerm(@Param("termo") String termo);
+    Page<Servicoradiadores> searchByTerm(@Param("termo") String termo, Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(s.preco), 0) FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim")
     BigDecimal sumPrecoByDataBetween(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);

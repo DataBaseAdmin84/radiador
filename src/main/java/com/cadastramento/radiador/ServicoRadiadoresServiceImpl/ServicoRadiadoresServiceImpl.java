@@ -4,6 +4,8 @@ import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.repository.ServicoRadiadoresRepository;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +39,13 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
     }
 
     @Override
-    public List<Servicoradiadores> listarTodos() {
-        return repository.findAll();
+    public Page<Servicoradiadores> listarTodos(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override
-    public List<Servicoradiadores> searchByTerm(String termo) {
-        return repository.searchByTerm(termo);
+    public Page<Servicoradiadores> searchByTerm(String termo, Pageable pageable) {
+        return repository.searchByTerm(termo, pageable);
     }
 
     @Override

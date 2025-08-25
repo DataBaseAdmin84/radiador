@@ -5,6 +5,10 @@ import com.cadastramento.radiador.model.Servicoradiadores;
 import com.cadastramento.radiador.service.PdfGenerationService;
 import com.cadastramento.radiador.service.ServicoRadiadoresService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -36,20 +40,26 @@ public class ServicoRadiadoresController {
     private PdfGenerationService pdfGenerationService;
 
     @GetMapping
-    public String exibirFormularioEListagem(@RequestParam(name = "termo", required = false) String termo, Model model) {
+    public String exibirFormularioEListagem(@RequestParam(name = "termo", required = false) String termo,
+                                            @RequestParam(name = "page", defaultValue = "0") int page,
+                                            @RequestParam(name = "size", defaultValue = "10") int size,
+                                            Model model) {
         if (!model.containsAttribute("servico")) {
             model.addAttribute("servico", new Servicoradiadores());
         }
 
-        List<Servicoradiadores> servicos;
+        // Cria o objeto de paginação, ordenando os resultados pela data mais recente
+        Pageable pageable = PageRequest.of(page, size, Sort.by("data").descending());
+
+        Page<Servicoradiadores> servicosPage;
         if (termo != null && !termo.trim().isEmpty()) {
-            servicos = servicoRadiadoresService.searchByTerm(termo);
+            servicosPage = servicoRadiadoresService.searchByTerm(termo, pageable);
         } else {
-            servicos = servicoRadiadoresService.listarTodos();
+            servicosPage = servicoRadiadoresService.listarTodos(pageable);
         }
 
         model.addAttribute("termo", termo); // Passa o termo de volta para o formulário
-        model.addAttribute("servicos", servicos);
+        model.addAttribute("servicosPage", servicosPage); // Envia o objeto Page para o HTML
         return "form-servico";
     }
 
