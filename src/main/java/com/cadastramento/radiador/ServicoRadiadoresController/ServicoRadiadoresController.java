@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -181,15 +182,18 @@ public class ServicoRadiadoresController {
         LocalDate dataInicio = data.with(weekFields.dayOfWeek(), 1);
         LocalDate dataFim = dataInicio.plusDays(6);
 
-        // Prepara os dados para o template
-        Map<String, Object> modelAttributes = Map.of(
-                "servicosDaSemana", servicosDaSemana,
-                "dataInicio", dataInicio,
-                "dataFim", dataFim,
-                "isPdfMode", true
-        );
+        // Calcula a soma total para o período
+        BigDecimal somaTotal = servicoRadiadoresService.somarValoresPorSemana(data);
 
-        ByteArrayOutputStream pdfStream = pdfGenerationService.generatePdfFromTemplate("relatorio-semana", modelAttributes);
+        // Prepara os dados para o template
+        Map<String, Object> modelAttributes = new HashMap<>();
+        modelAttributes.put("servicosDaSemana", servicosDaSemana);
+        modelAttributes.put("dataInicio", dataInicio);
+        modelAttributes.put("dataFim", dataFim);
+        modelAttributes.put("somaTotal", somaTotal); // Adiciona a soma ao modelo
+
+        // Usa o novo template específico para PDF
+        ByteArrayOutputStream pdfStream = pdfGenerationService.generatePdfFromTemplate("relatorio-semana-pdf", modelAttributes);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
