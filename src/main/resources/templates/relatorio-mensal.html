@@ -17,9 +17,20 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        /* Estilos adicionados para a nova seção de ações */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .btn-pdf {
+            background-color: #c0392b; /* Cor vermelha para PDF */
+            padding: 10px 20px;
+            color: white;
+        }
         .btn-voltar {
             display: inline-block;
-            margin-top: 20px;
             padding: 10px 20px;
             background-color: #6c757d;
             color: white;
@@ -58,7 +69,11 @@
         </tbody>
     </table>
 
-    <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+    <!-- Seção de Ações com os botões -->
+    <div class="actions">
+        <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+        <a th:href="@{/servicos/relatorio-mensal/pdf(data=${data})}" class="btn-voltar btn-pdf">Baixar PDF</a>
+    </div>
 </div>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Relatório Mensal</title>
+    <style>
+        /* Estilos simples e confiáveis para renderização em PDF */
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: left;
+        }
+        thead th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tfoot td {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+        .total-label {
+            text-align: right;
+        }
+        .total-value {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Relatório Mensal de Serviços</h1>
+    <p>
+        <strong>Mês de Referência:</strong>
+        <span th:text="${#temporals.format(data, 'MMMM ''de'' yyyy', new java.util.Locale('pt', 'BR'))}"></span>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Data</th>
+                <th>Modelo</th>
+                <th>Serviço Executado</th>
+                <th style="text-align: right;">Preço</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="servico : ${servicosDoMes}">
+                <td th:text="${servico.tipo}"></td>
+                <td th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
+                <td th:text="${servico.modelo}"></td>
+                <td th:text="${servico.servicoExecutado}"></td>
+                <td style="text-align: right;" th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(servicosDoMes)}">
+                <td colspan="5" style="text-align: center;">Nenhum serviço encontrado para este período.</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="total-label">Total do Mês:</td>
+                <td class="total-value" th:text="${'R$ ' + #numbers.formatDecimal(somaTotal, 1, 'POINT', 2, 'COMMA')}"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+</body>
+</html>

@@ -203,4 +203,28 @@ public class ServicoRadiadoresController {
         return ResponseEntity.ok().headers(headers).body(pdfStream.toByteArray());
     }
 
+    @GetMapping("/relatorio-mensal/pdf")
+    public ResponseEntity<byte[]> gerarPdfRelatorioMensal(@RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        List<RadiadorDTO> servicosDoMes = servicoRadiadoresService.buscarRadiadoresPorMes(data);
+
+        // Calcula a soma total para o período
+        BigDecimal somaTotal = servicoRadiadoresService.somarValoresPorMes(data);
+
+        // Prepara os dados para o template
+        Map<String, Object> modelAttributes = new HashMap<>();
+        modelAttributes.put("servicosDoMes", servicosDoMes);
+        modelAttributes.put("data", data); // Para o título
+        modelAttributes.put("somaTotal", somaTotal);
+
+        // Usa o novo template específico para PDF
+        ByteArrayOutputStream pdfStream = pdfGenerationService.generatePdfFromTemplate("relatorio-mensal-pdf", modelAttributes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        String filename = String.format("relatorio-mensal-%d-%02d.pdf", data.getYear(), data.getMonthValue());
+        headers.setContentDispositionFormData("attachment", filename);
+
+        return ResponseEntity.ok().headers(headers).body(pdfStream.toByteArray());
+    }
+
 }
