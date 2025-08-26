@@ -1,5 +1,6 @@
 package com.cadastramento.radiador.service;
 
+import com.cadastramento.radiador.DTO.FaturamentoDiarioDTO;
 import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,6 @@ public interface ServicoRadiadoresService {
     List<RadiadorDTO> buscarRadiadoresPorDia(LocalDate data);
     List<RadiadorDTO> buscarRadiadoresPorSemana(LocalDate data);
     List<RadiadorDTO> buscarRadiadoresPorMes(LocalDate data);
+
+    List<FaturamentoDiarioDTO> getFaturamentoDosUltimosDias(int dias);
 }

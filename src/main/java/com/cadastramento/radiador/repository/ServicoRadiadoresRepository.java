@@ -1,5 +1,6 @@
 package com.cadastramento.radiador.repository;
 
+import com.cadastramento.radiador.DTO.FaturamentoDiarioDTO;
 import com.cadastramento.radiador.DTO.RadiadorDTO;
 import com.cadastramento.radiador.model.Servicoradiadores;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,4 +37,13 @@ public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiad
 
     @Query("SELECT COALESCE(SUM(s.preco), 0) FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim")
     BigDecimal sumPrecoByDataBetween(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
+
+    /**
+     * Fetches the total revenue grouped by day for a given period.
+     * This is the most efficient way to get data for charts.
+     */
+    @Query("SELECT new com.cadastramento.radiador.DTO.FaturamentoDiarioDTO(s.data, SUM(s.preco)) " +
+           "FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim " +
+           "GROUP BY s.data ORDER BY s.data ASC")
+    List<FaturamentoDiarioDTO> findFaturamentoDiarioBetween(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
 }
