@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mudar Senha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Mudar Senha</h1>
+    </div>
+
+    <!-- Mensagens de Feedback -->
+    <div th:if="${error}" class="bg-red-100 border border-red-300 text-red-800 px-4 py-2 rounded mb-4 text-sm" th:text="${error}"></div>
+    <div th:if="${success}" class="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded mb-4 text-sm" th:text="${success}"></div>
+
+    <form th:action="@{/conta/mudar-senha}" method="post" class="space-y-4">
+        <div>
+            <label for="currentPassword" class="block text-gray-700 font-medium">Senha Atual</label>
+            <input type="password" id="currentPassword" name="currentPassword"
+                   class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div>
+            <label for="newPassword" class="block text-gray-700 font-medium">Nova Senha</label>
+            <input type="password" id="newPassword" name="newPassword"
+                   class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div>
+            <label for="confirmPassword" class="block text-gray-700 font-medium">Confirmar Nova Senha</label>
+            <input type="password" id="confirmPassword" name="confirmPassword"
+                   class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div class="flex items-center space-x-4 pt-4">
+            <button type="submit"
+                    class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                Salvar Nova Senha
+            </button>
+            <a th:href="@{/}" class="text-gray-600 hover:text-gray-800">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

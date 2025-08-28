@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -149,10 +149,13 @@
                     <div class="flex justify-center items-center space-x-2">
                         <a th:href="@{/servicos/editar/{id}(id=${servico.id})}"
                            class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition text-sm">✏️</a>
-                        <form th:action="@{/servicos/deletar/{id}(id=${servico.id})}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este serviço?');">
-                            <button type="submit"
-                                    class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition text-sm">🗑️</button>
-                        </form>
+                        <!-- O botão de exclusão só aparece para usuários com a permissão 'ROLE_ADMIN' -->
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <form th:action="@{/servicos/deletar/{id}(id=${servico.id})}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este serviço?');">
+                                <button type="submit"
+                                        class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition text-sm">🗑️</button>
+                            </form>
+                        </div>
                     </div>
                 </td>
             </tr>
