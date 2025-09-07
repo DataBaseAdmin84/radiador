@@ -1,144 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Soma dos Serviços por Dia</title>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        label {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        input[type="date"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background: #2980b9;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background: #3498db;
-        }
-        .result {
-            margin-top: 24px;
-            background: #eaf6ff;
-            padding: 16px;
-            border-radius: 6px;
-            text-align: center;
-        }
-        .result h2 {
-            margin: 8px 0;
-            color: #34495e;
-        }
-        .btn-voltar {
-            display: inline-block;
-            margin-top: 16px;
-            background: #7f8c8d;
-            color: #fff;
-            padding: 10px 24px;
-            border-radius: 4px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-        .btn-voltar:hover {
-            background: #95a5a6;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Radiadores Emerson - Total do Dia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Soma dos Serviços por Dia</h1>
-        <form th:action="@{/servicos/soma-dia}" method="get">
-            <label for="data">Selecione a data:</label>
-            <input type="date" id="data" name="data" th:value="${data}">
-            <button type="submit">Somar</button>
-        </form>
-        <div th:if="${soma != null}" class="result">
-            <!-- Melhorando a formatação da data e do valor monetário -->
-            <h2>Data selecionada: <span th:text="${#temporals.format(data, 'dd/MM/yyyy')}"></span></h2>
-            <h2>Soma total: <span th:text="${'R$ ' + #numbers.formatDecimal(soma, 1, 'POINT', 2, 'COMMA')}"></span></h2>
-            <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+<body class="bg-gray-100 flex justify-center items-start min-h-screen p-6">
+
+<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-4xl">
+
+    <header class="flex justify-between items-center mb-6 border-b pb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Consulta Diária</h1>
+            <p class="text-gray-500">Consulte o faturamento e os serviços de um dia específico.</p>
+        </div>
+        <a th:href="@{/servicos}" class="text-blue-600 hover:underline font-semibold">&laquo; Voltar ao Gerenciador</a>
+    </header>
+
+    <!-- Formulário de Consulta -->
+    <form th:action="@{/servicos/soma-dia}" method="get" class="flex items-end space-x-3 mb-8">
+        <div>
+            <label for="data" class="block text-gray-700 font-medium">Selecione a data:</label>
+            <input type="date" id="data" name="data" th:value="${data}"
+                   class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <button type="submit"
+                class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition font-semibold">
+            Consultar
+        </button>
+    </form>
+
+    <!-- Resultado -->
+    <div th:if="${soma != null}">
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-6 rounded-lg mb-6">
+            <h2 class="text-lg font-semibold">
+                Faturamento em <span class="font-bold" th:text="${#temporals.format(data, 'dd/MM/yyyy')}"></span>
+            </h2>
+            <p class="text-3xl font-bold mt-1" th:text="${'R$ ' + #numbers.formatDecimal(soma, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
 
         <!-- Tabela com os detalhes dos serviços do dia -->
-        <div th:if="${radiadores != null and not #lists.isEmpty(radiadores)}" style="margin-top: 30px;">
-            <h3 style="text-align: center; color: #333;">Detalhes dos Serviços do Dia</h3>
-            <table style="width:100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-                <thead>
-                <tr style="background-color: #f0f0f0;">
-                    <th style="padding: 10px; border: 1px solid #ddd;">Modelo</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Tipo</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Serviço</th>
-                    <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Preço</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="rad : ${radiadores}">
-                    <td th:text="${rad.modelo}" style="padding: 10px; border: 1px solid #ddd;"></td>
-                    <td th:text="${rad.tipo}" style="padding: 10px; border: 1px solid #ddd;"></td>
-                    <td th:text="${rad.servicoExecutado}" style="padding: 10px; border: 1px solid #ddd;"></td>
-                    <td th:text="${'R$ ' + #numbers.formatDecimal(rad.preco, 1, 'POINT', 2, 'COMMA')}" style="padding: 10px; border: 1px solid #ddd; text-align: right;"></td>
-                </tr>
-                </tbody>
-            </table>
+        <div th:if="${radiadores != null and not #lists.isEmpty(radiadores)}" class="mt-8">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Detalhes dos Serviços do Dia</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-3 border-b">Modelo</th>
+                            <th class="p-3 border-b">Tipo</th>
+                            <th class="p-3 border-b">Serviço</th>
+                            <th class="p-3 border-b text-right">Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="rad : ${radiadores}" class="hover:bg-gray-50">
+                            <td class="p-3 border-b" th:text="${rad.modelo}"></td>
+                            <td class="p-3 border-b" th:text="${rad.tipo}"></td>
+                            <td class="p-3 border-b" th:text="${rad.servicoExecutado}"></td>
+                            <td class="p-3 border-b text-right font-medium" th:text="${'R$ ' + #numbers.formatDecimal(rad.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <form th:action="@{/servicos/soma-semana}" method="get" style="margin-top:24px;">
-            <label for="dataSemana">Somar valores da semana:</label>
-            <input type="date" id="dataSemana" name="data" required>
-            <button type="submit">Calcular Semana</button>
-        </form>
-        <div th:if="${somaSemana != null}" class="result">
-            <h2>Semana da data: <span th:text="${dataSemana}"></span></h2>
-            <h2>Soma da semana: <span th:text="${somaSemana}"></span></h2>
-            <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
-        </div>
-
-
-        <form th:action="@{/servicos/soma-mes}" method="get" style="margin-top:24px;">
-            <label for="dataMes">Somar valores do mês:</label>
-            <input type="date" id="dataMes" name="data" required>
-            <button type="submit">Calcular Mês</button>
-        </form>
-        <div th:if="${somaMes != null}" class="result">
-            <h2>Mês da data: <span th:text="${dataMes}"></span></h2>
-            <h2>Soma do mês: <span th:text="${somaMes}"></span></h2>
-            <a th:href="@{/servicos}" class="btn-voltar">Voltar</a>
+         <div th:if="${radiadores != null and #lists.isEmpty(radiadores)}" class="text-center text-gray-500 py-8">
+            <p>Nenhum serviço foi registrado nesta data.</p>
         </div>
     </div>
+
+</div>
+
 </body>
 </html>
