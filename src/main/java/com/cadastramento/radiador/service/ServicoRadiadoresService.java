@@ -16,7 +16,7 @@ public interface ServicoRadiadoresService {
     Optional<Servicoradiadores> buscarServicoPorId(Long id);
     void deletarServico(Long id);
     Page<Servicoradiadores> listarTodos(Pageable pageable);
-    Page<Servicoradiadores> searchByTerm(String termo, Pageable pageable);
+    Page<Servicoradiadores> searchByTermAndDate(String termo, LocalDate data, Pageable pageable);
 
     // Métodos para Somas
     BigDecimal somarValoresPorData(LocalDate data);
@@ -29,4 +29,7 @@ public interface ServicoRadiadoresService {
     List<RadiadorDTO> buscarRadiadoresPorMes(LocalDate data);
 
     List<FaturamentoDiarioDTO> getFaturamentoDosUltimosDias(int dias);
+
+    // Novo método para o gráfico do dashboard
+    List<FaturamentoDiarioDTO> getFaturamentoMesCorrente();
 }

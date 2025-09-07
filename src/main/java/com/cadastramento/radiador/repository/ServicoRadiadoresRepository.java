@@ -26,14 +26,16 @@ public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiad
     List<RadiadorDTO> findServicosAsDTOByData(@Param("data") LocalDate data);
 
     /**
-     * Pesquisa por um termo em várias colunas da entidade Servicoradiadores.
-     * A pesquisa é case-insensitive (ignora maiúsculas/minúsculas).
+     * Pesquisa por um termo e/ou data. A pesquisa por termo é case-insensitive.
+     * Se o termo for nulo ou vazio, ele é ignorado.
+     * Se a data for nula, ela é ignorada.
      */
     @Query("SELECT s FROM Servicoradiadores s WHERE " +
-           "LOWER(s.modelo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "(:termo IS NULL OR :termo = '' OR LOWER(s.modelo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(s.tipo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
-           "LOWER(s.cliente) LIKE LOWER(CONCAT('%', :termo, '%'))")
-    Page<Servicoradiadores> searchByTerm(@Param("termo") String termo, Pageable pageable);
+           "LOWER(s.cliente) LIKE LOWER(CONCAT('%', :termo, '%'))) " +
+           "AND (:data IS NULL OR s.data = :data)")
+    Page<Servicoradiadores> searchByTermAndDate(@Param("termo") String termo, @Param("data") LocalDate data, Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(s.preco), 0) FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim")
     BigDecimal sumPrecoByDataBetween(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);

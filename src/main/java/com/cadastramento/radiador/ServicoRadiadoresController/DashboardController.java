@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
@@ -49,18 +50,27 @@ public class DashboardController {
         return "dashboard";
     }
 
-    @GetMapping("/api/faturamento-ultimos-7-dias")
-    @ResponseBody // Importante: Indica que o retorno é o corpo da resposta (JSON)
-    public List<Map<String, Object>> getFaturamentoUltimosSeteDias() {
+    @GetMapping("/api/faturamento")
+    @ResponseBody
+    public List<Map<String, Object>> getFaturamentoParaGrafico(@RequestParam(name = "periodo", defaultValue = "7d") String periodo) {
+        List<FaturamentoDiarioDTO> faturamento;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
 
-        // 1. Chama o novo e eficiente método de serviço.
-        List<FaturamentoDiarioDTO> faturamento = servicoRadiadoresService.getFaturamentoDosUltimosDias(7);
+        switch (periodo) {
+            case "30d":
+                faturamento = servicoRadiadoresService.getFaturamentoDosUltimosDias(30);
+                break;
+            case "this_month":
+                faturamento = servicoRadiadoresService.getFaturamentoMesCorrente();
+                break;
+            case "7d":
+            default:
+                faturamento = servicoRadiadoresService.getFaturamentoDosUltimosDias(7);
+                break;
+        }
 
-        // 2. Transform the DTO list into the Map structure that the JavaScript expects.
         return faturamento.stream()
                 .map(dto -> {
-                    // Criando o mapa explicitamente para evitar problemas de inferência de tipo
                     Map<String, Object> map = new HashMap<>();
                     map.put("data", dto.getData().format(formatter));
                     map.put("total", dto.getTotal());

@@ -42,6 +42,7 @@ public class ServicoRadiadoresController {
 
     @GetMapping
     public String exibirFormularioEListagem(@RequestParam(name = "termo", required = false) String termo,
+                                            @RequestParam(name = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
                                             @RequestParam(name = "page", defaultValue = "0") int page,
                                             @RequestParam(name = "size", defaultValue = "10") int size,
                                             Model model) {
@@ -49,18 +50,14 @@ public class ServicoRadiadoresController {
             model.addAttribute("servico", new Servicoradiadores());
         }
 
-        // Cria o objeto de paginação, ordenando os resultados pela data mais recente
         Pageable pageable = PageRequest.of(page, size, Sort.by("data").descending());
 
-        Page<Servicoradiadores> servicosPage;
-        if (termo != null && !termo.trim().isEmpty()) {
-            servicosPage = servicoRadiadoresService.searchByTerm(termo, pageable);
-        } else {
-            servicosPage = servicoRadiadoresService.listarTodos(pageable);
-        }
+        // Chama o novo método de busca unificado que lida com termo e/ou data
+        Page<Servicoradiadores> servicosPage = servicoRadiadoresService.searchByTermAndDate(termo, data, pageable);
 
-        model.addAttribute("termo", termo); // Passa o termo de volta para o formulário
-        model.addAttribute("servicosPage", servicosPage); // Envia o objeto Page para o HTML
+        model.addAttribute("termo", termo);
+        model.addAttribute("data", data); // Adiciona a data ao modelo para manter o filtro
+        model.addAttribute("servicosPage", servicosPage);
         return "form-servico";
     }
 

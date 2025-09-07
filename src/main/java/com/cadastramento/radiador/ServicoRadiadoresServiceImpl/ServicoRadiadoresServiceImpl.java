@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
@@ -48,8 +49,8 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
     }
 
     @Override
-    public Page<Servicoradiadores> searchByTerm(String termo, Pageable pageable) {
-        return repository.searchByTerm(termo, pageable);
+    public Page<Servicoradiadores> searchByTermAndDate(String termo, LocalDate data, Pageable pageable) {
+        return repository.searchByTermAndDate(termo, data, pageable);
     }
 
     @Override
@@ -78,7 +79,6 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
 
     @Override
     public List<RadiadorDTO> buscarRadiadoresPorSemana(LocalDate data) {
-        // A lógica de cálculo de datas é a mesma da soma
         LocalDate inicioSemana = data.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
         LocalDate fimSemana = inicioSemana.plusDays(6);
         return repository.findServicosAsDTOByDataBetween(inicioSemana, fimSemana);
@@ -86,7 +86,6 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
 
     @Override
     public List<RadiadorDTO> buscarRadiadoresPorMes(LocalDate data) {
-        // A lógica de cálculo de datas é a mesma da soma
         LocalDate inicioMes = data.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate fimMes = data.with(TemporalAdjusters.lastDayOfMonth());
         return repository.findServicosAsDTOByDataBetween(inicioMes, fimMes);
@@ -97,16 +96,27 @@ public class ServicoRadiadoresServiceImpl implements ServicoRadiadoresService {
         LocalDate dataFim = LocalDate.now();
         LocalDate dataInicio = dataFim.minusDays(dias - 1);
 
-        // 1. Fetch aggregated data from the database in one go.
         List<FaturamentoDiarioDTO> faturamentoDoPeriodo = repository.findFaturamentoDiarioBetween(dataInicio, dataFim);
-
-        // 2. Create a map for quick lookup of days that had revenue.
         Map<LocalDate, BigDecimal> faturamentoMap = faturamentoDoPeriodo.stream()
                 .collect(Collectors.toMap(FaturamentoDiarioDTO::getData, FaturamentoDiarioDTO::getTotal));
 
-        // 3. Generate the complete list for the 'dias', filling in 0 for days with no sales.
-        return IntStream.range(0, dias)
-                .mapToObj(i -> dataInicio.plusDays(i))
+        return Stream.iterate(dataInicio, data -> data.plusDays(1))
+                .limit(dias)
+                .map(data -> new FaturamentoDiarioDTO(data, faturamentoMap.getOrDefault(data, BigDecimal.ZERO)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FaturamentoDiarioDTO> getFaturamentoMesCorrente() {
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicioMes = hoje.with(TemporalAdjusters.firstDayOfMonth());
+
+        List<FaturamentoDiarioDTO> faturamentoDoPeriodo = repository.findFaturamentoDiarioBetween(inicioMes, hoje);
+        Map<LocalDate, BigDecimal> faturamentoMap = faturamentoDoPeriodo.stream()
+                .collect(Collectors.toMap(FaturamentoDiarioDTO::getData, FaturamentoDiarioDTO::getTotal));
+
+        return Stream.iterate(inicioMes, data -> data.plusDays(1))
+                .limit(hoje.getDayOfMonth())
                 .map(data -> new FaturamentoDiarioDTO(data, faturamentoMap.getOrDefault(data, BigDecimal.ZERO)))
                 .collect(Collectors.toList());
     }

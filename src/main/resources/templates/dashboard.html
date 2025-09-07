@@ -27,37 +27,30 @@
 
     <!-- Cards de Resumo -->
     <div class="grid md:grid-cols-3 gap-6 mb-8">
-        <!-- Card Hoje -->
         <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
             <h3 class="text-gray-500 font-medium">Faturamento de Hoje</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-2"
-               th:text="${'R$ ' + #numbers.formatDecimal(somaHoje, 1, 'POINT', 2, 'COMMA')}">
-                R$ 0,00
-            </p>
+            <p class="text-3xl font-bold text-gray-800 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaHoje, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
-
-        <!-- Card Semana -->
         <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
             <h3 class="text-gray-500 font-medium">Faturamento da Semana</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-2"
-               th:text="${'R$ ' + #numbers.formatDecimal(somaSemana, 1, 'POINT', 2, 'COMMA')}">
-                R$ 0,00
-            </p>
+            <p class="text-3xl font-bold text-gray-800 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaSemana, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
-
-        <!-- Card Mês -->
         <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
             <h3 class="text-gray-500 font-medium">Faturamento do Mês</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-2"
-               th:text="${'R$ ' + #numbers.formatDecimal(somaMes, 1, 'POINT', 2, 'COMMA')}">
-                R$ 0,00
-            </p>
+            <p class="text-3xl font-bold text-gray-800 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaMes, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
     </div>
 
     <!-- Gráfico de Faturamento -->
     <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Faturamento dos Últimos 7 Dias</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="chartTitle" class="text-xl font-semibold text-gray-700">Faturamento</h2>
+            <div id="chartPeriodSelector" class="flex space-x-2 bg-gray-200 p-1 rounded-lg">
+                <button data-periodo="7d" class="period-btn px-3 py-1 text-sm font-medium rounded-md">Últimos 7 dias</button>
+                <button data-periodo="30d" class="period-btn px-3 py-1 text-sm font-medium rounded-md">Últimos 30 dias</button>
+                <button data-periodo="this_month" class="period-btn px-3 py-1 text-sm font-medium rounded-md">Este Mês</button>
+            </div>
+        </div>
         <canvas id="faturamentoChart"></canvas>
     </div>
 
@@ -79,8 +72,7 @@
                     <td class="p-3" th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
                     <td class="p-3" th:text="${servico.modelo}"></td>
                     <td class="p-3" th:text="${servico.cliente}"></td>
-                    <td class="p-3 text-right font-medium"
-                        th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                    <td class="p-3 text-right font-medium" th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(ultimosServicos)}">
                     <td colspan="4" class="p-4 text-center text-gray-500">Nenhum serviço cadastrado ainda.</td>
@@ -94,40 +86,66 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Faz a chamada para o nosso novo endpoint de API
-        fetch('/api/faturamento-ultimos-7-dias')
-            .then(response => response.json())
-            .then(data => {
-                // Extrai os dados para os eixos do gráfico
-                const labels = data.map(item => item.data);
-                const totals = data.map(item => item.total);
+        const ctx = document.getElementById('faturamentoChart').getContext('2d');
+        let faturamentoChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Faturamento Diário (R$)',
+                    data: [],
+                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
 
-                const ctx = document.getElementById('faturamentoChart').getContext('2d');
+        const chartTitle = document.getElementById('chartTitle');
+        const periodButtons = document.querySelectorAll('.period-btn');
 
-                // Cria o gráfico com Chart.js
-                new Chart(ctx, {
-                    type: 'bar', // Tipo do gráfico
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Faturamento Diário (R$)',
-                            data: totals,
-                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 1,
-                            borderRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
+        function fetchChartData(periodo) {
+            fetch(`/api/faturamento?periodo=${periodo}`)
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => item.data);
+                    const totals = data.map(item => item.total);
+
+                    faturamentoChart.data.labels = labels;
+                    faturamentoChart.data.datasets[0].data = totals;
+                    faturamentoChart.update();
                 });
+        }
+
+        function setActiveButton(clickedButton) {
+            periodButtons.forEach(button => {
+                button.classList.remove('bg-white', 'text-blue-600', 'shadow');
+                button.classList.add('text-gray-600');
             });
+            clickedButton.classList.add('bg-white', 'text-blue-600', 'shadow');
+            clickedButton.classList.remove('text-gray-600');
+
+            // Atualiza o título do gráfico
+            chartTitle.textContent = `Faturamento - ${clickedButton.textContent}`;
+        }
+
+        periodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const periodo = button.dataset.periodo;
+                setActiveButton(button);
+                fetchChartData(periodo);
+            });
+        });
+
+        // Carrega os dados iniciais e define o botão ativo
+        const initialButton = document.querySelector('button[data-periodo="7d"]');
+        setActiveButton(initialButton);
+        fetchChartData('7d');
     });
 </script>
 
