@@ -33,7 +33,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login") // Define a URL da nossa página de login customizada
-                .defaultSuccessUrl("/", true) // Redireciona para o dashboard após o login
+                .defaultSuccessUrl("/servicos", true) // Redireciona para a página de gerenciamento de serviços após o login
                 .permitAll() // Permite que todos acessem a página de login
             )
             .logout(logout -> logout.permitAll()); // Permite que todos façam logout
