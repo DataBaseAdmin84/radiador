@@ -2,87 +2,98 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Relatório Mensal</title>
+    <title>Radiadores Emerson - Relatório Mensal</title>
     <style>
-        /* Estilos simples e confiáveis para renderização em PDF */
+        /* Estilos para renderização em PDF */
         body {
-            font-family: "Helvetica", "Arial", sans-serif;
-            font-size: 11px;
-            color: #333;
+            font-family: 'Inter', "Helvetica", "Arial", sans-serif;
+            font-size: 10px;
+            color: #1f2937; /* Cor base do gray-800 do Tailwind */
+            line-height: 1.5;
+            padding: 20px;
         }
         h1 {
-            text-align: center;
-            color: #444;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #111827; /* Cor do gray-900 */
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #4b5563; /* Cor do gray-600 */
+            margin-bottom: 20px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         th, td {
-            border: 1px solid #ccc;
-            padding: 6px;
+            border: 1px solid #e5e7eb; /* Cor do gray-200 */
+            padding: 8px 12px;
             text-align: left;
         }
         thead th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+            background-color: #f9fafb; /* Cor do gray-50 */
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #6b7280; /* Cor do gray-500 */
+            font-size: 10px;
+            letter-spacing: 0.05em;
         }
         tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f3f4f6; /* Cor de uma linha zebra */
         }
-        tfoot td {
+        .text-right {
+            text-align: right;
+        }
+        .total-row {
+            border-top: 2px solid #6b7280;
+        }
+        .total-row td {
             font-weight: bold;
-            background-color: #f2f2f2;
-        }
-        .total-label {
-            text-align: right;
-        }
-        .total-value {
-            text-align: right;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Relatório Mensal de Serviços</h1>
-    <p>
-        <strong>Mês de Referência:</strong>
-        <span th:text="${#temporals.format(data, 'MMMM ''de'' yyyy', new java.util.Locale('pt', 'BR'))}"></span>
-    </p>
+<h1>Relatório Mensal de Serviços</h1>
+<p class="subtitle">
+    <strong>Mês de Referência:</strong>
+    <span th:text="${#temporals.format(data, 'MMMM ''de'' yyyy', new java.util.Locale('pt', 'BR'))}"></span>
+</p>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Tipo</th>
-                <th>Data</th>
-                <th>Modelo</th>
-                <th>Serviço Executado</th>
-                <th style="text-align: right;">Preço</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="servico : ${servicosDoMes}">
-                <td th:text="${servico.tipo}"></td>
-                <td th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
-                <td th:text="${servico.modelo}"></td>
-                <td th:text="${servico.servicoExecutado}"></td>
-                <td style="text-align: right;" th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(servicosDoMes)}">
-                <td colspan="5" style="text-align: center;">Nenhum serviço encontrado para este período.</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="4" class="total-label">Total do Mês:</td>
-                <td class="total-value" th:text="${'R$ ' + #numbers.formatDecimal(somaTotal, 1, 'POINT', 2, 'COMMA')}"></td>
-            </tr>
-        </tfoot>
-    </table>
+<table>
+    <thead>
+    <tr>
+        <th>Data</th>
+        <th>Modelo</th>
+        <th>Serviço Executado</th>
+        <th>Cliente</th>
+        <th class="text-right">Preço</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="servico : ${servicosDoMes}">
+        <td th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
+        <td th:text="${servico.modelo}"></td>
+        <td th:text="${servico.servicoExecutado}"></td>
+        <td th:text="${servico.cliente}"></td>
+        <td class="text-right" th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(servicosDoMes)}">
+        <td colspan="5" style="text-align: center;">Nenhum serviço encontrado para este período.</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr class="total-row">
+        <td colspan="4" class="text-right">Total do Mês:</td>
+        <td class="text-right" th:text="${'R$ ' + #numbers.formatDecimal(somaTotal, 1, 'POINT', 2, 'COMMA')}"></td>
+    </tr>
+    </tfoot>
+</table>
 
 </body>
 </html>
