@@ -1,81 +1,89 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Radiadores Emerson - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-4 sm:p-6 lg:p-8">
 
-    <header class="flex justify-between items-center mb-8">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-            <p class="text-gray-500">Resumo das atividades do seu negócio.</p>
+            <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p class="mt-1 text-md text-gray-600">Resumo das atividades do seu negócio.</p>
         </div>
-        <div class="flex items-center space-x-4">
-            <a th:href="@{/conta/mudar-senha}" class="text-gray-600 hover:text-blue-600 transition">Mudar Senha</a>
+        <div class="mt-4 sm:mt-0 flex items-center space-x-4">
+            <a th:href="@{/conta/mudar-senha}" class="text-sm font-medium text-gray-600 hover:text-indigo-800">
+                Mudar Senha
+            </a>
             <a th:href="@{/servicos}"
-               class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition font-semibold">
-                ⚙️ Gerenciar Serviços
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM6 9a1 1 0 00-1 1v4a1 1 0 001 1h8a1 1 0 001-1v-4a1 1 0 00-1-1H6zm1 1a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Gerenciar Serviços
             </a>
         </div>
     </header>
 
-    <!-- Cards de Resumo -->
-    <div class="grid md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
-            <h3 class="text-gray-500 font-medium">Faturamento de Hoje</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaHoje, 1, 'POINT', 2, 'COMMA')}"></p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <h3 class="text-sm font-medium text-gray-500">Faturamento de Hoje</h3>
+            <p class="text-3xl font-bold text-gray-900 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaHoje, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
-            <h3 class="text-gray-500 font-medium">Faturamento da Semana</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaSemana, 1, 'POINT', 2, 'COMMA')}"></p>
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
+            <h3 class="text-sm font-medium text-gray-500">Faturamento da Semana</h3>
+            <p class="text-3xl font-bold text-gray-900 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaSemana, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
-            <h3 class="text-gray-500 font-medium">Faturamento do Mês</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaMes, 1, 'POINT', 2, 'COMMA')}"></p>
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-500">
+            <h3 class="text-sm font-medium text-gray-500">Faturamento do Mês</h3>
+            <p class="text-3xl font-bold text-gray-900 mt-2" th:text="${'R$ ' + #numbers.formatDecimal(somaMes, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
     </div>
 
-    <!-- Gráfico de Faturamento -->
-    <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
-        <div class="flex justify-between items-center mb-4">
-            <h2 id="chartTitle" class="text-xl font-semibold text-gray-700">Faturamento</h2>
-            <div id="chartPeriodSelector" class="flex space-x-2 bg-gray-200 p-1 rounded-lg">
-                <button data-periodo="7d" class="period-btn px-3 py-1 text-sm font-medium rounded-md">Últimos 7 dias</button>
-                <button data-periodo="30d" class="period-btn px-3 py-1 text-sm font-medium rounded-md">Últimos 30 dias</button>
-                <button data-periodo="this_month" class="period-btn px-3 py-1 text-sm font-medium rounded-md">Este Mês</button>
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+            <h2 id="chartTitle" class="text-xl font-semibold text-gray-800">Faturamento</h2>
+            <div id="chartPeriodSelector" class="mt-4 sm:mt-0 flex space-x-2 bg-gray-100 p-1 rounded-md">
+                <button data-periodo="7d" class="period-btn px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:bg-white hover:shadow transition-colors">Últimos 7 dias</button>
+                <button data-periodo="30d" class="period-btn px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:bg-white hover:shadow transition-colors">Últimos 30 dias</button>
+                <button data-periodo="this_month" class="period-btn px-3 py-1 text-sm font-medium rounded-md text-gray-600 hover:bg-white hover:shadow transition-colors">Este Mês</button>
             </div>
         </div>
         <canvas id="faturamentoChart"></canvas>
     </div>
 
-    <!-- Tabela de Últimos Serviços -->
-    <div class="bg-white p-6 rounded-xl shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Últimos Serviços Cadastrados</h2>
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">Últimos Serviços Cadastrados</h2>
+        </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                <tr class="bg-gray-100">
-                    <th class="p-3">Data</th>
-                    <th class="p-3">Modelo</th>
-                    <th class="p-3">Cliente</th>
-                    <th class="p-3 text-right">Preço</th>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="servico : ${ultimosServicos}" class="border-b hover:bg-gray-50">
-                    <td class="p-3" th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
-                    <td class="p-3" th:text="${servico.modelo}"></td>
-                    <td class="p-3" th:text="${servico.cliente}"></td>
-                    <td class="p-3 text-right font-medium" th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="servico : ${ultimosServicos}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#temporals.format(servico.data, 'dd/MM/yyyy')}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${servico.modelo}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${servico.cliente}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium" th:text="${'R$ ' + #numbers.formatDecimal(servico.preco, 1, 'POINT', 2, 'COMMA')}"></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(ultimosServicos)}">
-                    <td colspan="4" class="p-4 text-center text-gray-500">Nenhum serviço cadastrado ainda.</td>
+                    <td colspan="4" class="text-center py-10 text-gray-500">Nenhum serviço cadastrado ainda.</td>
                 </tr>
                 </tbody>
             </table>
@@ -94,15 +102,28 @@
                 datasets: [{
                     label: 'Faturamento Diário (R$)',
                     data: [],
-                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgb(99, 102, 241, 0.7)',
+                    borderColor: 'rgb(79, 70, 229, 1)',
                     borderWidth: 1,
                     borderRadius: 5
                 }]
             },
             options: {
                 responsive: true,
-                scales: { y: { beginAtZero: true } }
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [5, 5] }
+                    }
+                }
             }
         });
 
@@ -111,7 +132,12 @@
 
         function fetchChartData(periodo) {
             fetch(`/api/faturamento?periodo=${periodo}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const labels = data.map(item => item.data);
                     const totals = data.map(item => item.total);
@@ -119,15 +145,19 @@
                     faturamentoChart.data.labels = labels;
                     faturamentoChart.data.datasets[0].data = totals;
                     faturamentoChart.update();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    alert('Erro ao carregar dados do gráfico.');
                 });
         }
 
         function setActiveButton(clickedButton) {
             periodButtons.forEach(button => {
-                button.classList.remove('bg-white', 'text-blue-600', 'shadow');
+                button.classList.remove('bg-white', 'shadow', 'text-indigo-600');
                 button.classList.add('text-gray-600');
             });
-            clickedButton.classList.add('bg-white', 'text-blue-600', 'shadow');
+            clickedButton.classList.add('bg-white', 'shadow', 'text-indigo-600');
             clickedButton.classList.remove('text-gray-600');
 
             // Atualiza o título do gráfico
