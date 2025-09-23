@@ -5,66 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Radiadores Emerson - Total do Dia</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-start min-h-screen p-6">
+<body class="bg-gray-50">
 
-<div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-4xl">
+<div class="container mx-auto p-4 sm:p-6 lg:p-8">
 
-    <header class="flex justify-between items-center mb-6 border-b pb-4">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Consulta Diária</h1>
-            <p class="text-gray-500">Consulte o faturamento e os serviços de um dia específico.</p>
+            <h1 class="text-3xl font-bold text-gray-900">Consulta Diária</h1>
+            <p class="mt-1 text-md text-gray-600">Consulte o faturamento e os serviços de um dia específico.</p>
         </div>
-        <a th:href="@{/servicos}" class="text-blue-600 hover:underline font-semibold">&laquo; Voltar ao Gerenciador</a>
+        <a th:href="@{/servicos}" class="mt-4 sm:mt-0 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" />
+            </svg>
+            Voltar ao Gerenciamento
+        </a>
     </header>
 
-    <!-- Formulário de Consulta -->
-    <form th:action="@{/servicos/soma-dia}" method="get" class="flex items-end space-x-3 mb-8">
-        <div>
-            <label for="data" class="block text-gray-700 font-medium">Selecione a data:</label>
-            <input type="date" id="data" name="data" th:value="${data}"
-                   class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-        </div>
-        <button type="submit"
-                class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition font-semibold">
-            Consultar
-        </button>
-    </form>
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Consultar Total do Dia</h2>
+        <form th:action="@{/servicos/soma-dia}" method="get" class="flex flex-col sm:flex-row items-end space-y-4 sm:space-y-0 sm:space-x-3">
+            <div class="w-full sm:w-auto">
+                <label for="data" class="block text-sm font-medium text-gray-700">Selecione a data:</label>
+                <input type="date" id="data" name="data" th:value="${data}"
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+            </div>
+            <button type="submit"
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+                Consultar
+            </button>
+        </form>
+    </div>
 
-    <!-- Resultado -->
-    <div th:if="${soma != null}">
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-6 rounded-lg mb-6">
-            <h2 class="text-lg font-semibold">
+    <div th:if="${soma != null}" class="bg-white shadow-md rounded-lg p-6">
+        <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-md" role="alert">
+            <h2 class="text-lg font-semibold mb-1">
                 Faturamento em <span class="font-bold" th:text="${#temporals.format(data, 'dd/MM/yyyy')}"></span>
             </h2>
-            <p class="text-3xl font-bold mt-1" th:text="${'R$ ' + #numbers.formatDecimal(soma, 1, 'POINT', 2, 'COMMA')}"></p>
+            <p class="text-3xl font-bold" th:text="${'R$ ' + #numbers.formatDecimal(soma, 1, 'POINT', 2, 'COMMA')}"></p>
         </div>
 
-        <!-- Tabela com os detalhes dos serviços do dia -->
-        <div th:if="${radiadores != null and not #lists.isEmpty(radiadores)}" class="mt-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Detalhes dos Serviços do Dia</h3>
+        <div th:if="${radiadores != null and not #lists.isEmpty(radiadores)}">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Detalhes dos Serviços do Dia</h3>
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="p-3 border-b">Modelo</th>
-                            <th class="p-3 border-b">Tipo</th>
-                            <th class="p-3 border-b">Serviço</th>
-                            <th class="p-3 border-b text-right">Preço</th>
-                        </tr>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serviço</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Preço</th>
+                    </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="rad : ${radiadores}" class="hover:bg-gray-50">
-                            <td class="p-3 border-b" th:text="${rad.modelo}"></td>
-                            <td class="p-3 border-b" th:text="${rad.tipo}"></td>
-                            <td class="p-3 border-b" th:text="${rad.servicoExecutado}"></td>
-                            <td class="p-3 border-b text-right font-medium" th:text="${'R$ ' + #numbers.formatDecimal(rad.preco, 1, 'POINT', 2, 'COMMA')}"></td>
-                        </tr>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tr th:each="rad : ${radiadores}" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${rad.modelo}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${rad.tipo}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${rad.servicoExecutado}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium" th:text="${'R$ ' + #numbers.formatDecimal(rad.preco, 1, 'POINT', 2, 'COMMA')}"></td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-         <div th:if="${radiadores != null and #lists.isEmpty(radiadores)}" class="text-center text-gray-500 py-8">
+        <div th:if="${radiadores != null and #lists.isEmpty(radiadores)}" class="text-center text-gray-500 py-8">
             <p>Nenhum serviço foi registrado nesta data.</p>
         </div>
     </div>
