@@ -1,12 +1,50 @@
-CREATE DATABASE radiadores;
-use radiadores;
+create DATABASE radiador;
 
-CREATE TABLE servicoradiadores (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    modelo VARCHAR(100) NOT NULL,
-    tipo VARCHAR(100) NOT NULL,
-    servicoExecutado VARCHAR(255) NOT NULL,
-    cliente VARCHAR(100) NOT NULL,
-    data DATE NOT NULL,
-    preco DOUBLE NOT NULL
+use radiador;
+
+CREATE TABLE `servicoradiadores` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `modelo` VARCHAR(255) NOT NULL,
+  `tipo` VARCHAR(255) NOT NULL,
+  `servico_executado` VARCHAR(255) NOT NULL,
+  `cliente` VARCHAR(255) NOT NULL,
+  `data` DATE NOT NULL,
+  `preco` DECIMAL(38,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `users` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `password` VARCHAR(255) DEFAULT NULL,
+  `username` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `roles` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `user_roles` (
+  `user_id` BIGINT NOT NULL,
+  `role_id` BIGINT NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `FK_user_rol_role_id` (`role_id`),
+  CONSTRAINT `FK_user_rol_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+  CONSTRAINT `FK_user_rol_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Inserir usuário admin
+INSERT INTO users (username, password)
+VALUES ('admin', 'senha criptografaga');
+
+-- Criar role ROLE_ADMIN caso ainda não exista
+INSERT IGNORE INTO roles (name) VALUES ('ROLE_ADMIN');
+
+-- Associar admin à ROLE_ADMIN
+INSERT INTO user_roles (user_id, role_id)
+VALUES (
+    (SELECT id FROM users WHERE username = 'admin'),
+    (SELECT id FROM roles WHERE name = 'ROLE_ADMIN')
 );
