@@ -126,6 +126,8 @@
                 <form th:action="@{/servicos}" method="get" class="flex items-center space-x-2">
                     <input type="text" name="termo" placeholder="Pesquisar..." th:value="${termo}"
                            class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <input type="date" name="data" th:value="${data != null ? #temporals.format(data, 'yyyy-MM-dd') : ''}"
+                           class="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     <button type="submit" class="p-2 inline-flex items-center border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
@@ -189,8 +191,8 @@
         <!-- Controles de Paginação -->
         <div th:if="${servicosPage.totalPages > 0}" class="px-6 py-4 flex items-center justify-between border-t border-gray-200">
             <div class="flex-1 flex justify-between sm:hidden">
-                <a th:if="${!servicosPage.first}" th:href="@{/servicos(page=${servicosPage.number - 1}, size=${servicosPage.size}, termo=${termo})}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Anterior </a>
-                <a th:if="${!servicosPage.last}" th:href="@{/servicos(page=${servicosPage.number + 1}, size=${servicosPage.size}, termo=${termo})}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Próxima </a>
+                <a th:if="${!servicosPage.first}" th:href="@{/servicos(page=${servicosPage.number - 1}, size=${servicosPage.size}, termo=${termo}, data=${data})}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Anterior </a>
+                <a th:if="${!servicosPage.last}" th:href="@{/servicos(page=${servicosPage.number + 1}, size=${servicosPage.size}, termo=${termo}, data=${data})}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Próxima </a>
             </div>
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
@@ -206,18 +208,18 @@
                 </div>
                 <div>
                     <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <a th:if="${!servicosPage.first}" th:href="@{/servicos(page=${servicosPage.number - 1}, size=${servicosPage.size}, termo=${termo})}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <a th:if="${!servicosPage.first}" th:href="@{/servicos(page=${servicosPage.number - 1}, size=${servicosPage.size}, termo=${termo}, data=${data})}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                             <span class="sr-only">Anterior</span>
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                         </a>
                         
                         <th:block th:each="i : ${#numbers.sequence(0, servicosPage.totalPages - 1)}">
-                             <a th:href="@{/servicos(page=${i}, size=${servicosPage.size}, termo=${termo})}" 
+                             <a th:href="@{/servicos(page=${i}, size=${servicosPage.size}, termo=${termo}, data=${data})}" 
                                 th:class="${i == servicosPage.number} ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'"
                                 th:text="${i + 1}"></a>
                         </th:block>
 
-                        <a th:if="${!servicosPage.last}" th:href="@{/servicos(page=${servicosPage.number + 1}, size=${servicosPage.size}, termo=${termo})}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <a th:if="${!servicosPage.last}" th:href="@{/servicos(page=${servicosPage.number + 1}, size=${servicosPage.size}, termo=${termo}, data=${data})}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                             <span class="sr-only">Próxima</span>
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
                         </a>
