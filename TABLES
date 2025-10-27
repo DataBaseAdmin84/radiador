@@ -51,24 +51,7 @@ FROM users u, roles r
 WHERE u.username = 'admin' AND r.name = 'ROLE_ADMIN'
 ON CONFLICT DO NOTHING;
 
-SELECT username FROM users;
 
-SELECT username, password FROM users;
 
-select * from users;
 
-INSERT INTO users (username, password)
-VALUES ('admin', '$2a$12$VjT8H/./HtZ01cLec5c6I.5C8rKfRex2wXvtth25GvnacJGsAUEcm');
 
-UPDATE users
-SET
-  username = 'Emerson',
-  password = '$2a$12$VjT8H/./HtZ01cLec5c6I.5C8rKfRex2wXvtth25GvnacJGsAUEcm'
-WHERE username = 'Joao';
-
-select * from users;
-
-DELETE FROM users
-WHERE password = '$2a$12$VjT8H/.HtZ01cLec5c6l.5C8rKfRex2wXvtth25GvnacJGsAUEcm';
-
-DELETE FROM users WHERE id = 4;
