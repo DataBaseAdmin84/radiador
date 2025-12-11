@@ -1,57 +1,50 @@
--- Criar banco de dados
---CREATE DATABASE radiador;
+create DATABASE radiador;
 
+use radiador;
 
--- Tabela servicoradiadores
-CREATE TABLE servicoradiadores (
-    id BIGSERIAL PRIMARY KEY,
-    modelo VARCHAR(255) NOT NULL,
-    tipo VARCHAR(255) NOT NULL,
-    servico_executado VARCHAR(255) NOT NULL,
-    cliente VARCHAR(255) NOT NULL,
-    data DATE NOT NULL,
-    preco NUMERIC(38,2) NOT NULL
-);
+CREATE TABLE `servicoradiadores` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `modelo` VARCHAR(255) NOT NULL,
+  `tipo` VARCHAR(255) NOT NULL,
+  `servico_executado` VARCHAR(255) NOT NULL,
+  `cliente` VARCHAR(255) NOT NULL,
+  `data` DATE NOT NULL,
+  `preco` DECIMAL(38,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Tabela users
-CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(255),
-    password VARCHAR(255)
-);
+CREATE TABLE `users` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `password` VARCHAR(255) DEFAULT NULL,
+  `username` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Tabela roles
-CREATE TABLE roles (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255)
-);
+CREATE TABLE `roles` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Tabela user_roles (tabela de relacionamento)
-CREATE TABLE user_roles (
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
-);
+CREATE TABLE `user_roles` (
+  `user_id` BIGINT NOT NULL,
+  `role_id` BIGINT NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `FK_user_rol_role_id` (`role_id`),
+  CONSTRAINT `FK_user_rol_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+  CONSTRAINT `FK_user_rol_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Inserir usuário admin
 INSERT INTO users (username, password)
-VALUES ('admin', 'Oracle#21c');
+VALUES ('admin', 'senha criptografaga');
 
 -- Criar role ROLE_ADMIN caso ainda não exista
-INSERT INTO roles (name)
-SELECT 'ROLE_ADMIN'
-WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'ROLE_ADMIN');
+INSERT IGNORE INTO roles (name) VALUES ('ROLE_ADMIN');
 
 -- Associar admin à ROLE_ADMIN
 INSERT INTO user_roles (user_id, role_id)
-SELECT u.id, r.id
-FROM users u, roles r
-WHERE u.username = 'admin' AND r.name = 'ROLE_ADMIN'
-ON CONFLICT DO NOTHING;
-
-
-
-
-
+VALUES (
+    (SELECT id FROM users WHERE username = 'admin'),
+    (SELECT id FROM roles WHERE name = 'ROLE_ADMIN')
+);
