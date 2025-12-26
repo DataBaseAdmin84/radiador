@@ -25,11 +25,6 @@ public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiad
            "FROM Servicoradiadores s WHERE s.data = :data ORDER BY s.id")
     List<RadiadorDTO> findServicosAsDTOByData(@Param("data") LocalDate data);
 
-    /**
-     * Pesquisa por um termo e/ou data. A pesquisa por termo é case-insensitive.
-     * Se o termo for nulo ou vazio, ele é ignorado.
-     * Se a data for nula, ela é ignorada.
-     */
     @Query("SELECT s FROM Servicoradiadores s WHERE " +
            "(:termo IS NULL OR :termo = '' OR LOWER(s.modelo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(s.tipo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
@@ -40,10 +35,6 @@ public interface ServicoRadiadoresRepository extends JpaRepository<Servicoradiad
     @Query("SELECT COALESCE(SUM(s.preco), 0) FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim")
     BigDecimal sumPrecoByDataBetween(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
 
-    /**
-     * Fetches the total revenue grouped by day for a given period.
-     * This is the most efficient way to get data for charts.
-     */
     @Query("SELECT new com.cadastramento.radiador.DTO.FaturamentoDiarioDTO(s.data, SUM(s.preco)) " +
            "FROM Servicoradiadores s WHERE s.data BETWEEN :dataInicio AND :dataFim " +
            "GROUP BY s.data ORDER BY s.data ASC")
